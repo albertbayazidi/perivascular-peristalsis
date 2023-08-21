@@ -111,7 +111,14 @@ def get_Q(r0, betas, ls, eps):
     if len(betas) == 2:
         Q = get_Q_tandem(r0, betas, ls, eps)
         Q = [Q, Q]
-    
+        
+    if len(betas) == 3:
+        indices = [(0, 1, 2),]
+        paths = [(0, 1), (0, 2)]
+                
+        (P, dP, Q1s) = solve_bifurcating_tree(indices, paths, betas, ls)
+        Q = [Q1*eps for Q1 in Q1s]
+        
     return Q
     
 

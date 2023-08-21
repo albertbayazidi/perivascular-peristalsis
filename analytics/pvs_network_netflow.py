@@ -154,11 +154,10 @@ def avg_Q_1_n(P, dP, ell, R, Delta):
            + Delta/(2*ell**2*R)*(P*(1 - np.exp(z*ell))).real)
     return val
 
-def solve_bifurcating_tree(indices, paths, r_o, r_e, L, k):
+
+def solve_bifurcating_tree(indices, paths, beta, ell):
     
     # Computation of dimension-less parameters
-    beta = [_beta(re, ro) for (re, ro) in zip(r_e, r_o)]
-    ell = [k*l for l in L]
     R = [_R(b) for b in beta]
     Delta = [_delta(b) for b in beta]
     
