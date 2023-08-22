@@ -12,7 +12,7 @@ from utils import *
 
 def run_comparison(G, radius0, lamdas, freqs, betas, Ls,
                              n_cycles=0, ts_per_cycle=40, eps=0.1, 
-                             folder_name='results', kargs=None):
+                             kargs=None):
     '''
     
     Simulate pulsatile flow due to vasomotion in a bifurcated vessel and compare with analytic solution
@@ -34,8 +34,9 @@ def run_comparison(G, radius0, lamdas, freqs, betas, Ls,
                                         n_cycles=n_cycles, tsteps_per_cycle=ts_per_cycle, epsilon=eps)
     
     
+    table_str = str(kargs) + '\n\n'
     
-    table_str = f'$\lambda$  &  \langle Q_h\' \\rangle   $\langle Q\' \\rangle$    & \\\\ \n'
+    table_str += f'$\lambda$  &  \langle Q_h\' \\rangle   $\langle Q\' \\rangle$    & \\\\ \n'
     for i, exp in enumerate(experiments):
     
         # Grab parameters 
@@ -58,10 +59,6 @@ def run_comparison(G, radius0, lamdas, freqs, betas, Ls,
         
         netflow_root = netflow_per_node[0]
         
-        import matplotlib.pyplot as plt
-        plt.plot(netflow_root)
-        plt.savefig(f'netflow.png')
-        
         Qh_avg_tilde_root = (netflow_root[-1]-netflow_root[-ts_per_cycle-1])/T_cycle
         
         
@@ -80,19 +77,6 @@ def run_comparison(G, radius0, lamdas, freqs, betas, Ls,
         
     table_str += f'\n\n\%{str(kargs)}'
     print(table_str)
-    
-    # Save table and figure
-    if os.path.isdir(f'{folder_name}') == False: #in case the folder doesn't exist
-        os.mkdir(f'{folder_name}')
-    
-    # Description of the geometry and vasomotion    
-    geom_desc = f'{len(G.edges())}vessel'  
-    vasomotion_desc = f'eps{eps:1.1f}'
-    
-    # Now save    
-    table_file = open(f'table_{geom_desc}_{vasomotion_desc}.txt', 'w')
-    table_file.write(table_str)
-    table_file.close()
     
     
     
@@ -199,5 +183,9 @@ if __name__ == '__main__':
         
     G = setup_graph(args.betas, args.Ls, args.radius0)
     
+    if len(args.betas) == 1: fname = 'results/comparison/singlevessel'
+    if len(args.betas) == 2: fname = 'results/comparison/tandemvessel'
+    if len(args.betas) == 3: fname = 'results/comparison/Yvessel'
+    
     run_comparison(G, radius0=args.radius0, lamdas=args.lambdas, freqs=args.freq, betas=args.betas, Ls=args.Ls, eps=args.eps,
-                             n_cycles=args.n_cycles, ts_per_cycle=args.ts_per_cycle)
+                             n_cycles=args.n_cycles, ts_per_cycle=args.ts_per_cycle, kargs=args)

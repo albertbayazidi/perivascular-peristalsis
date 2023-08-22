@@ -84,7 +84,7 @@ def run_peristalsis_simulation(G, lamdas, freqs, n_cycles, tsteps_per_cycle, eps
         
         n_cycles = exp['n_cycles']
     
-        model = TimeDepHydraulicNetwork(G, p_bc=Constant(0), f=f, Ainv=area_inv, Res=res, degree=1)
+        model = TimeDepHydraulicNetwork(G, p_bc=Constant(0), f=f, Ainv=area_inv, Res=res)
         
         time_steps = exp['ts_per_cycle']*n_cycles
         
