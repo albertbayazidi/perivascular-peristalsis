@@ -1,11 +1,11 @@
 import numpy as np
 import numpy.linalg
-import ufl
+from numpy import pi
 
 def _invR(beta):
     "Helper function for evaluating \mathcal{R}^{-1}(beta)."
     
-    val = np.pi/8*(beta**4 - 1 - (beta**2 - 1)**2/ufl.ln(beta))
+    val = np.pi/8*(beta**4 - 1 - (beta**2 - 1)**2/np.log(beta))
     return val
 
 def _R(beta):
@@ -14,7 +14,7 @@ def _R(beta):
 
 def _delta(beta):
     "Helper function for evaluating Delta(beta)."
-    delt = ((2 - (beta**2-1)/ufl.ln(beta))**2)/(beta**4 - 1 - (beta**2 - 1)**2/ufl.ln(beta))
+    delt = ((2 - (beta**2-1)/np.log(beta))**2)/(beta**4 - 1 - (beta**2 - 1)**2/np.log(beta))
     return delt
     
 def _beta(r_e, r_o):
@@ -174,14 +174,12 @@ def solve_bifurcating_tree(indices, paths, beta, ell):
 
     return (P, dP, Q1)
 
-def solve_three_junction(indices, paths, r_o, r_e, L, k):
-
+def solve_three_junction(indices, paths, betas, ell):
+    
     # Computation of dimension-less parameters
-    beta = [_beta(re, ro) for (re, ro) in zip(r_e, r_o)]
-    ell = [k*l for l in L]
-    R = [_R(b) for b in beta]
-    Delta = [_delta(b) for b in beta]
-    print("beta = ", beta)
+    R = [_R(b) for b in betas]
+    Delta = [_delta(b) for b in betas]
+    print("beta = ", betas)
     print("ell = ", ell)
     print("R = ", R)
     print("Delta = ", Delta)
@@ -372,7 +370,7 @@ if __name__ == "__main__":
 
     import sys
     
-    if False:
+    if True:
         print("Solving Murray tree.")
         (generations, indices, paths, r_o, r_e, L) = \
             generate_murray_tree(int(sys.argv[1]), r=0.1, gamma=0.8, beta=2.0, L0=10)
@@ -387,24 +385,40 @@ if __name__ == "__main__":
         print(r_o)
         print(r_e)
         print(L)
-        (P, dP, avg_Q_1) = solve_bifurcating_tree(indices, paths, r_o, r_e, L, k)
         
-    if False:
+        betas = [_beta(re, ro) for (re, ro) in zip(r_e, r_o)]
+        ells = [k*l for l in L]
+        
+        (P, dP, avg_Q_1) = solve_bifurcating_tree(indices, paths, betas, ells)
+        
+    if True:
         (indices, paths, r_o, r_e, L, k, omega, varepsilon) = single_bifurcation_data()
         print("Solving general tree (single bifurcation case)")
-        (P, dP, avg_Q_1) = solve_bifurcating_tree(indices, paths, r_o, r_e, L, k)
+        
+        betas = [_beta(re, ro) for (re, ro) in zip(r_e, r_o)]
+        ells = [k*l for l in L]
+        
+        (P, dP, avg_Q_1) = solve_bifurcating_tree(indices, paths, betas, ells)
 
-    if False:
+    if True:
         (indices, paths, r_o, r_e, L, k, omega, varepsilon) = three_junction_data()
+        
+        betas = [_beta(re, ro) for (re, ro) in zip(r_e, r_o)]
+        ells = [k*l for l in L]
+        
         print("Solving three-junction case explicitly")
-        (P, dP, avg_Q_1) = solve_three_junction(indices, paths, r_o, r_e, L, k)
+        (P, dP, avg_Q_1) = solve_three_junction(indices, paths, betas, ells)
 
-    if False:
+    if True:
         (indices, paths, r_o, r_e, L, k, omega, varepsilon) = three_junction_data()
         print("Solving general tree (three junction case)")
-        (P, dP, avg_Q_1) = solve_bifurcating_tree(indices, paths, r_o, r_e, L, k)
+        
+        betas = [_beta(re, ro) for (re, ro) in zip(r_e, r_o)]
+        ells = [k*l for l in L]
+        
+        (P, dP, avg_Q_1) = solve_bifurcating_tree(indices, paths, betas, ells)
 
-    if False:
+    if True:
         print("P = ", P)
         print("dP = ", dP)
         print("<Q_1> = ", avg_Q_1)
