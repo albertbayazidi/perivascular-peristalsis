@@ -26,7 +26,7 @@ RUN rm -r demo/
 # Get fenics_ii
 RUN git clone https://github.com/MiroK/fenics_ii.git && \
     cd fenics_ii && \
-    git checkout 58c41f0
+    git checkout 58c41f0 && \
     python3 -m pip install -e . && \
     cd ..
 
