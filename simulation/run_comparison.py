@@ -2,12 +2,9 @@ from graphnics import *
 from xii import *
 import numpy as np
 
-import sys
-sys.path.append('../analytics')
-
-from pvs_network_netflow import *
-from peristalsis import *
-from utils import *
+from analytics.pvs_network_netflow import *
+from simulation.peristalsis import *
+from analytics.utils import *
 
 
 def run_comparison(G, radius0, lamdas, freqs, betas, Ls,

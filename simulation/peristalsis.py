@@ -4,10 +4,8 @@ import ufl
 import numpy as np
 
 
-import sys
-sys.path.append('../analytics')
-import pvs_network_netflow as pvs
-from utils import *
+from analytics import pvs_network_netflow as pvs
+from analytics.utils import *
 
 '''
 Helper functions that run a peristaltis simulation on a given arterial tree

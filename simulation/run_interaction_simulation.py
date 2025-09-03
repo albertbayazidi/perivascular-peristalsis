@@ -6,12 +6,10 @@ import numpy as np
 sns.set()
 import matplotlib.pyplot as plt
 
-import sys
-sys.path.append('../analytics')
 
-from pvs_network_netflow import *
-from peristalsis import *
-from utils import *
+from analytics import pvs_network_netflow *
+from simulation.peristalsis import *
+from analytics.utils import *
 
 
 from peristalsis import *
