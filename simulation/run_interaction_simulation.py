@@ -7,12 +7,9 @@ sns.set()
 import matplotlib.pyplot as plt
 
 
-from analytics import pvs_network_netflow *
+from analytics.pvs_network_netflow import *
 from simulation.peristalsis import *
 from analytics.utils import *
-
-
-from peristalsis import *
 
 def interacting_peristalsis(G):
     """
@@ -158,7 +155,7 @@ def interacting_waves(L, radius0, lamdas, freqs, beta=3, n_cycles=5,tsteps_per_c
     eps1_.assign(eps[0])
     eps2_.assign(eps[1])
     
-    model = TimeDepHydraulicNetwork(G, p_bc=Constant(0), f=f, Ainv=area_inv, Res=res, g=g, degree=2)
+    model = TimeDepHydraulicNetwork(G, p_bc=Constant(0), f=f, Ainv=area_inv, Res=res, g=g) # removed degree = 2, could add it back but then i would have to make my own version of graphnics
 
     T = n_cycles/min(freqs)
     print(f'Time={T}, time_steps={time_steps}')
@@ -249,7 +246,7 @@ if __name__ == '__main__':
     args.add_argument('--n_cycles', type=int, default=20)
     args.add_argument('--tsteps_per_cycle', type=int, default=1000)
     
-    args.add_argument('--tree', type=int, default=0)
+    args.add_argument('--tree', type=int, default=1)
     
     args = args.parse_args()
     
