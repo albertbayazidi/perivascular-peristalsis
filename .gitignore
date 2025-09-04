@@ -1,2 +1,7 @@
 **/__pycache__/
-useful_*
+**/.ipynb_checkpoints/
+
+results/*
+pyrightconfig.json
+code_related_notes/
+typings/
