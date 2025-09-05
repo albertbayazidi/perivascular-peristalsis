@@ -5,6 +5,7 @@ import numpy as np
 from analytics.pvs_network_netflow import *
 from simulation.peristalsis import *
 from analytics.utils import *
+from simulation.utils.save_utils import my_save_fun
 
 
 def run_comparison(G, radius0, lamdas, freqs, betas, Ls,
@@ -29,7 +30,8 @@ def run_comparison(G, radius0, lamdas, freqs, betas, Ls,
     # Run experiments and get results
     experiments = run_peristalsis_simulation(G=G, lamdas=lamdas, freqs=freqs, 
                                         n_cycles=n_cycles, tsteps_per_cycle=ts_per_cycle, epsilon=eps)
-    
+    Q_avg_num_results = []
+    Q_avg_analytical_results = []
     
     table_str = str(kargs) + '\n\n'
     
@@ -71,7 +73,16 @@ def run_comparison(G, radius0, lamdas, freqs, betas, Ls,
         rel_error = np.abs(Q_tilde_root-Qh_avg_tilde_root)/Q_tilde_root*100
 
         table_str += f'{lamda_val:g}  & {Qh_avg_tilde_root:<1.3e} ({rel_error:1.2f}\%)   & {Q_tilde_root:<1.3e} \\\\ \n' 
-        
+
+        # Large Qh for hver iteration
+        Q_avg_num_results.append(Qh_avg_tilde_root) 
+        Q_avg_analytical_results.append(Q_tilde_root)
+
+
+    my_save_fun(Q_avg_numerical = Q_avg_num_results,
+                Q_avg_analytical = Q_avg_analytical_results,
+                Q_avg_analytical_new_imp = 0,args=kargs)
+
     table_str += f'\n\n\%{str(kargs)}'
     print(table_str)
     
@@ -180,9 +191,6 @@ if __name__ == '__main__':
         
     G = setup_graph(args.betas, args.Ls, args.radius0)
     
-    if len(args.betas) == 1: fname = 'results/comparison/singlevessel'
-    if len(args.betas) == 2: fname = 'results/comparison/tandemvessel'
-    if len(args.betas) == 3: fname = 'results/comparison/Yvessel'
     
     run_comparison(G, radius0=args.radius0, lamdas=args.lambdas, freqs=args.freq, betas=args.betas, Ls=args.Ls, eps=args.eps,
                              n_cycles=args.n_cycles, ts_per_cycle=args.ts_per_cycle, kargs=args)
