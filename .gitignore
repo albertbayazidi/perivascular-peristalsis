@@ -5,3 +5,4 @@ results/*
 pyrightconfig.json
 code_related_notes/
 typings/
+.config

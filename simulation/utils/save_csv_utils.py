@@ -16,6 +16,11 @@ def make_csv(Q_avg_numerical, Q_avg_analytical, Q_avg_analytical_new_imp, args):
         lambdas = np.atleast_1d(args.lambdas)
         freq = np.full(n, args.freq)
 
+    elif len(args.lambdas) == 1 and len(args.freq) == 1:
+        n = 1
+        lambdas = args.lambdas
+        freq = args.freq
+
     else:
         print("Error: Something went wrong!", file=sys.stderr)
         sys.exit(1) 
@@ -23,7 +28,7 @@ def make_csv(Q_avg_numerical, Q_avg_analytical, Q_avg_analytical_new_imp, args):
 
     Q_num = np.atleast_1d(Q_avg_numerical)
     Q_an = np.atleast_1d(Q_avg_analytical)
-    Q_an_imp = np.full(n, 0) # this must be changed when Q_an_imp has been written
+    Q_an_imp = np.full(n, Q_avg_analytical_new_imp) # this must be changed when Q_an_imp has been written
 
     rows = []
     for i in range(n):

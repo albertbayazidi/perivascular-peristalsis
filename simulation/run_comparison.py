@@ -5,7 +5,6 @@ import numpy as np
 from analytics.pvs_network_netflow import *
 from simulation.peristalsis import *
 from analytics.utils import *
-from simulation.utils.save_utils import my_save_fun
 
 
 def run_comparison(G, radius0, lamdas, freqs, betas, Ls,
@@ -78,14 +77,10 @@ def run_comparison(G, radius0, lamdas, freqs, betas, Ls,
         Q_avg_num_results.append(Qh_avg_tilde_root) 
         Q_avg_analytical_results.append(Q_tilde_root)
 
-
-    my_save_fun(Q_avg_numerical = Q_avg_num_results,
-                Q_avg_analytical = Q_avg_analytical_results,
-                Q_avg_analytical_new_imp = 0,args=kargs)
-
     table_str += f'\n\n\%{str(kargs)}'
     print(table_str)
     
+    return Q_avg_num_results,Q_avg_analytical_results,experiments 
     
     
     
