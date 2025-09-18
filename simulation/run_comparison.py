@@ -29,8 +29,6 @@ def run_comparison(G, radius0, lamdas, freqs, betas, Ls,
     # Run experiments and get results
     experiments = run_peristalsis_simulation(G=G, lamdas=lamdas, freqs=freqs, 
                                         n_cycles=n_cycles, tsteps_per_cycle=ts_per_cycle, epsilon=eps)
-    Q_avg_num_results = []
-    Q_avg_analytical_results = []
     
     table_str = str(kargs) + '\n\n'
     
@@ -59,30 +57,25 @@ def run_comparison(G, radius0, lamdas, freqs, betas, Ls,
         
         Qh_avg_tilde_root = (netflow_root[-1]-netflow_root[-ts_per_cycle-1])/T_cycle
         
-        
         G.compute_edge_lengths()
+
         ls = [k*L for L in Ls] # fractional lengths
-    
+
         Qs = get_Q(radius0, betas, ls, eps)
-        
+
         Qs_tilde = [dimensional_Q(Q, k, w, eps, radius0) for Q in Qs]
-        
+
         Q_tilde_root = Qs_tilde[0]
-        
+
         rel_error = np.abs(Q_tilde_root-Qh_avg_tilde_root)/Q_tilde_root*100
 
-        table_str += f'{lamda_val:g}  & {Qh_avg_tilde_root:<1.3e} ({rel_error:1.2f}\%)   & {Q_tilde_root:<1.3e} \\\\ \n' 
+        table_str += f'{lamda_val:g}  & {Qh_avg_tilde_root:<1.3e} ({rel_error:1.2f}\%)   & {Q_tilde_root:<1.3e} \\\\ \n'
 
-        # Large Qh for hver iteration
-        Q_avg_num_results.append(Qh_avg_tilde_root) 
-        Q_avg_analytical_results.append(Q_tilde_root)
 
     table_str += f'\n\n\%{str(kargs)}'
+
     print(table_str)
-    
-    return Q_avg_num_results,Q_avg_analytical_results,experiments 
-    
-    
+   
     
 def get_Q(r0, betas, ls, eps):
     '''

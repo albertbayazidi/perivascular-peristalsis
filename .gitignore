@@ -1,8 +1,8 @@
 **/__pycache__/
 **/.ipynb_checkpoints/
+dev_tools/*
 
 results/*
 pyrightconfig.json
 code_related_notes/
 typings/
-.config

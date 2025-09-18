@@ -1,0 +1,35 @@
+import pandas as pd
+from simulation.utils.save_path_utils import make_folder_and_path_name 
+
+
+def make_experiment_result_dict(r0, Ls, beta0, experiments, Q_avg_num_results, Q_avg_analytical):
+    data = []
+    for i, exp in enumerate(experiments):
+
+        n_cycles, ts_per_cycle, epsilon, freq, lamda = [exp[key] for key in ["n_cycles", "ts_per_cycle",
+                                                                             "epsilon", "freq", "lamda",]]
+        Q_avg_num_i = Q_avg_num_results[i]
+        Q_avg_analytical_i =  Q_avg_analytical[i]
+
+        data.append({
+        "n_cycles": n_cycles,
+        "ts_per_cycle": ts_per_cycle,
+        "epsilon": epsilon,
+        "freq": freq,
+        "lamda": lamda,
+        "beta0": beta0,
+        "r0": r0,
+        "Ls": Ls,
+        "Q_avg_num": Q_avg_num_i,
+        "Q_avg_analytical": Q_avg_analytical_i
+    }) 
+
+    return data
+
+
+def save_raw_data(data):
+
+    df = pd.DataFrame(data)
+    path = make_folder_and_path_name(df)
+    df.to_csv(path, index=False)
+
