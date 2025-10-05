@@ -62,6 +62,8 @@ if __name__ == "__main__":
     
     if args.n_cycles == 0:
         args.n_cycles = args.ts_per_cycle
+    else:
+        print("this was not taken into consideration. Storing the files will be incosistant")
     
     betas = args.betas
     Ls = args.Ls

@@ -1,11 +1,10 @@
 import pandas as pd
-from simulation.utils.save_path_utils import make_folder_and_path_name 
-
+from simulation.utils.save_path_utils import make_experiment_folder
 
 def make_experiment_result_dict(depth,r0, Ls, betas, experiments, Q_avg_num_results, Q_avg_analytical):
     data = []
-    for i, exp in enumerate(experiments):
 
+    for i, exp in enumerate(experiments):
         n_cycles, ts_per_cycle, epsilon, freq, lamda = [exp[key] for key in ["n_cycles", "ts_per_cycle",
                                                                              "epsilon", "freq", "lamda",]]
         Q_avg_num_i = Q_avg_num_results[i]
@@ -17,7 +16,7 @@ def make_experiment_result_dict(depth,r0, Ls, betas, experiments, Q_avg_num_resu
             "ts_per_cycle": ts_per_cycle,
             "epsilon": epsilon,
             "freq": freq,
-            "lamda": lamda,
+            "lambdas": lamda,
             "betas": betas,
             "r0": r0,
             "Ls": Ls,
@@ -30,7 +29,8 @@ def make_experiment_result_dict(depth,r0, Ls, betas, experiments, Q_avg_num_resu
 
 def save_raw_data(data):
 
-    df = pd.DataFrame(data)
-    path = make_folder_and_path_name(df)
-    df.to_csv(path, index=False)
+    json_string, json_path = make_experiment_folder(pd.DataFrame(data))
+
+    with open(json_path, "w") as f:
+        f.write(json_string)
 
