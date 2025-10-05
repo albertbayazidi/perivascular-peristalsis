@@ -2,16 +2,13 @@ from analytics.new_implementation.helper_functions import dimensional_Q
 from analytics.new_implementation.volemetric_flow import *
 
 def experiment_parameters(exp, Ls):
-
     k, w  = [exp[key] for key in ['k', 'w']]
-
     ls = [k*L for L in Ls] 
 
     return k, w, ls
 
 
-def avg_flow(G, experiments, radius0, betas, Ls, eps ):
-   
+def avg_flow(G, experiments, radius0, betas, Ls, eps):
     Q_array = [] # should be length of nr of experiments
 
     for _, exp in enumerate(experiments):

@@ -12,12 +12,22 @@ def make_path_using_parameters(data):
     return filename 
 
 def make_folder_and_path_name(data):
-    
-    base_path_name = join("results","comparison","complex_graph")
+    depth = data["depth"][0] 
+    betas = data["betas"][0]
 
-    file_name = join(base_path_name,make_path_using_parameters(data))
+    if len(betas) == 1 and depth == 2:
+        folder = "single_element"
+    elif len(betas) == 2 and depth == 2:
+        folder = "tandem_element"
+    elif len(betas) == 3 and depth == 2:     
+        folder = "bifurcated"
+    else:
+        folder = "complex"
 
-    if isdir(f"{base_path_name}") == False: 
-        makedirs(f"{base_path_name}",exist_ok=True)
+    path_name = join("results","comparison",folder)
+    file_name = join(path_name,make_path_using_parameters(data))
+
+    if isdir(f"{path_name}") == False: 
+        makedirs(f"{path_name}",exist_ok=True)
   
     return file_name
