@@ -1,6 +1,5 @@
 **/__pycache__/
 **/.ipynb_checkpoints/
-dev_tools/*
 
 results/*
 pyrightconfig.json
