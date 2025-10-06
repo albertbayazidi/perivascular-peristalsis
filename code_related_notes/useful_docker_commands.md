@@ -1,9 +1,14 @@
-
 # normal development
-For normal development a jupyter-notebook might be an overkill, start the dev container with. (it will close after exiting)
+start of by building the docker env
+
 ```bash
-docker run --name grap-dev-container -v "$(pwd):/home/fenics/shared" \ 
-            -p 127.0.0.1:8888:8888 -p 127.0.0.1:8000:8000 -it graphnics
+docker build --no-cache -t graphnics .
+```
+
+For normal development a jupyter-notebook might be an overkill, start the dev container with. (it will close after exiting)
+
+```bash
+docker run --name grap-dev-container -v "$(pwd):/home/fenics/shared" -p 127.0.0.1:8888:8888 -p 127.0.0.1:8000:8000 -it graphnics
 ```
 
 after having started it once you can reenter it with
