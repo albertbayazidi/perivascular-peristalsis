@@ -34,3 +34,4 @@ def save_raw_data(data):
     with open(json_path, "w") as f:
         f.write(json_string)
 
+    return json_path

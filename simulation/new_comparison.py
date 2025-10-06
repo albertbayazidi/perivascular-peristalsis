@@ -35,8 +35,8 @@ def compare(G, r0, Ls, betas, lamdas, freqs, n_cycles=0, ts_per_cycle=40, eps=0.
 
     return Q_avg_num_results, Q_avg_analytical, experiments
 
-if __name__ == "__main__":
-    
+
+def main():
     args = argp.ArgumentParser()
     
     # domain parameters
@@ -93,5 +93,11 @@ if __name__ == "__main__":
 
     exp_result_dict = make_experiment_result_dict(depth, r0, Ls, betas, experiments, Q_avg_num_results, Q_avg_analytical)
 
-    save_raw_data(exp_result_dict);
+    json_path  = save_raw_data(exp_result_dict);
+    return json_path
 
+
+if __name__ == "__main__":
+    json_path = main()
+
+    print(json_path)
