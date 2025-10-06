@@ -2,8 +2,8 @@ from dev_tools.scripts.experiment_utils import *
 
 desimals=3
 
-depth = 2
-ts_per_cycle = 10
+depth = 5
+ts_per_cycle = 25
 
 # could use these but i want to test computing them based on c/f = lambda
 c_pial = 0.4 # Daversin-Catty 2020 se tabl II in directional flow 
@@ -51,9 +51,8 @@ REM_ARGS = [
     *make_cmd_ready("eps", REM_vasomotion_eps)]
 
 with ProcessPoolExecutor() as main_executor:
-    #single element
-    future_non_rem = main_executor.submit(run_experiments, [*NON_REM_ARGS, *input_args(2)], Ls_array)
-    future_rem = main_executor.submit(run_experiments, [*REM_ARGS, *input_args(2)], Ls_array)
+    future_non_rem = main_executor.submit(run_experiments, [*NON_REM_ARGS, *input_args(depth)], Ls_array)
+    future_rem = main_executor.submit(run_experiments, [*REM_ARGS, *input_args(depth)], Ls_array)
     
     non_rem_paths = future_non_rem.result()
     rem_paths = future_rem.result()

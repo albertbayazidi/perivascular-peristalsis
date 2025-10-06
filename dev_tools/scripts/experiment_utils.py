@@ -36,6 +36,7 @@ def run_single_experiment(args_and_L):
     cmd = ["python", "-m", "simulation.new_comparison"]
     cmd.extend(args)
     cmd.extend(["--Ls", str(L)])
+    print(" ".join(cmd))
     result = subprocess.run(cmd, stdout=subprocess.PIPE, encoding="utf-8")
     last_line = result.stdout.strip().split('\n')[-1] if result.stdout else ""
     return L, last_line
