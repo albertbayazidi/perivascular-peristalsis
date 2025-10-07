@@ -3,7 +3,7 @@
 eps="--eps 0.1"
 r0="--radius0 0.1"
 depth="--depth 2"
-lambdas="--lambdas 0.1 1 10 100"
+lambdas="--lambdas 0.1 1 2 10"
 ts_per_cycle="--ts_per_cycle 25 50"
 freq="--freq 1"
 
@@ -16,7 +16,7 @@ python -m simulation.new_comparison $eps $r0 $depth $lambdas $freq --betas 2 --L
 
 # TANDEM PERIVASCULAR ELEMENTS
 ## Equal length segments
-python -m simulation.new_comparison $eps $r0  $depth $lambdas $ts_per_cycle $freq --betas 2 3 --Ls 0.5 0.5  &
+python -m simulation.new_comparison $eps $r0 $depth $lambdas $ts_per_cycle $freq --betas 2 3 --Ls 0.5 0.5 &
 
 ## Unequal length segments
 python -m simulation.new_comparison $eps $r0 $depth $lambdas $ts_per_cycle $freq --betas 4 2 --Ls 1 2 & 
