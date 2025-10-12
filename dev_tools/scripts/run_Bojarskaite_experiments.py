@@ -2,7 +2,7 @@ from dev_tools.scripts.experiment_utils import *
 
 desimals=3
 
-depth = 5
+depth = 2           # must be two or greater
 ts_per_cycle = 25
 
 # could use these but i want to test computing them based on c/f = lambda

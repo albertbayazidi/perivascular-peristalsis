@@ -21,7 +21,7 @@
 - [x] Make my own analytical implementaion
 
 - [x] Finn ut hvorfor ting ikke blir skalert med sin tilhørende gamma
-    - MÅ VÆRE AT GAMMA ER ANTATT Å VÆRE 1, NOE DET IKKE ER. DA GAMMA = R_0/R_CURRENT
+   - MÅ VÆRE AT GAMMA ER ANTATT Å VÆRE 1, NOE DET IKKE ER. DA GAMMA = R_0/R_CURRENT
 
 - [x] kanskje det er verdt å lage noe kode som gjør dybde først søk for å kunne lage disse pathsene som man skal gi til koden.
 
