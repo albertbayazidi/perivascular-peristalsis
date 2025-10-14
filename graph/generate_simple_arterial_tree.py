@@ -25,7 +25,7 @@ def make_arterial_tree(N, radius0=1, gam=0.8, L0=3, directions=False, uniform_le
     # Parameters
     # Origin location
     p0 = [0, 0, 0]
-    L0 = L0 +3
+    L0 = L0
     # Initial direction
     direction = [0, 1, 0]
 
