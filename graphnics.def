@@ -1,0 +1,46 @@
+Bootstrap: docker
+From: ceciledc/fenics_mixed_dimensional:21-06-22
+
+%post
+    # We use 'set -e' to make the script exit immediately if any command fails.
+    set -e
+
+    apt-get update
+    apt-get -y install python3-h5py libgl1-mesa-glx
+    
+    pip install --upgrade pip
+    pip install networkx pandas vtk tqdm seaborn
+    pip install --no-cache-dir notebook jupyterlab jupyterhub
+    pip install -U setuptools
+
+    rm -rf /var/lib/apt/lists/*
+
+
+    # remove the fenics-mixed-dim folder if it exists
+    rm -rf /demo
+
+    # Get fenics_ii
+    git clone https://github.com/MiroK/fenics_ii.git
+    cd fenics_ii
+    git checkout 58c41f0
+    python3 -m pip install .
+    cd ..
+    rm -rf fenics_ii # clean up source code
+
+    # cbc.block
+    git clone https://bitbucket.org/fenics-apps/cbc.block
+    cd cbc.block
+    python3 -m pip install .
+    cd ..
+    rm -rf cbc.block # clean up source code
+      
+    # fix decorator error by reinstalling scipy
+    pip uninstall -y scipy
+    pip install scipy
+
+    # and finally install graphnics
+    git clone https://github.com/IngeborgGjerde/graphnics
+    cd graphnics
+    python3 -m pip install .
+    cd ..
+    rm -rf graphnics # clean up source code
