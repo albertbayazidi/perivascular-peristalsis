@@ -2,7 +2,7 @@ import numpy as np
 import networkx as nx
 from analytics.new_implementation.helper_functions import _delta,_R
 from analytics.new_implementation.pressure_system import construct_dP_matrix,construct_P_matrix,solve_system
-from analytics.new_implementation.utils.graph_utils import junctions, find_twig_path
+from graph.graph_utils import junctions, find_twig_path
 
 from analytics.pvs_network_netflow import get_Q_single, get_Q_tandem
 

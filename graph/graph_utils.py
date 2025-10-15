@@ -21,3 +21,4 @@ def junctions(G):
         junction_points.append(group.tolist())
 
     return junction_points
+

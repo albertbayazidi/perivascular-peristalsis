@@ -31,7 +31,7 @@ def construct_P_matrix(indices, paths, l, R, gamma):
     """
     z = 1j
 
-    E = len(gamma)  
+    E = len(indices) + len(paths)
     A = sp.lil_matrix((E, E), dtype=complex) 
     b = np.zeros(E, dtype=complex) 
     
