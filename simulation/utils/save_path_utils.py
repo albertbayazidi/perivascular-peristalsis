@@ -54,10 +54,10 @@ def make_experiment_folder(data):
     exp_folder = os.path.join(base_path, f"exp_{exp_hash}")
 
     os.makedirs(exp_folder, exist_ok=True)
-    json_path = os.path.join(exp_folder, "results.json")
     json_string = to_json(config)
 
-    return json_string,json_path 
+
+    return json_string,exp_folder 
 
 
 

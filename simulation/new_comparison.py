@@ -7,6 +7,8 @@ from graph.choose_graph import setup_graph
 from graph.visualize_tree import plot_tree
 
 from dev_tools.make_exp_dict import make_dummy_exp_results
+from dev_tools.check_experiment_args import check_args
+
 from simulation.numerical_bifurcation import run_numerics
 from analytics.new_implementation.avg_flow import avg_flow
 
@@ -28,8 +30,8 @@ def compare(G, r0, Ls, betas, lamdas, freqs, n_cycles=0, ts_per_cycle=40, eps=0.
         
     '''
 
-    Q_avg_num_results, experiments = run_numerics(G, lamdas, freqs, n_cycles, ts_per_cycle, eps)
-    #Q_avg_num_results, experiments = make_dummy_exp_results(G, lamdas, freqs, n_cycles, ts_per_cycle, eps) # Debugging tool
+    #Q_avg_num_results, experiments = run_numerics(G, lamdas, freqs, n_cycles, ts_per_cycle, eps)
+    Q_avg_num_results, experiments = make_dummy_exp_results(G, lamdas, freqs, n_cycles, ts_per_cycle, eps) # Debugging tool
 
     Q_avg_analytical = avg_flow(G, experiments, r0, betas, Ls, eps)
 
@@ -59,26 +61,8 @@ def main():
     args.add_argument("--plot", action="store_true", help="Enable plotting")
 
     args = args.parse_args()
-    
-    if args.n_cycles == 0:
-        args.n_cycles = args.ts_per_cycle
-    else:
-        print("this was not taken into consideration. Storing the files will be incosistant")
-    
-    betas = args.betas
-    Ls = args.Ls
-    depth = args.depth[0]
-    r0 = args.radius0
-    lambdas = args.lambdas
-    freqs = args.freq
-    n_cycles = args.n_cycles
-    ts_per_cycle = args.ts_per_cycle 
-    eps = args.eps
 
-    signs = np.tile([-1,1], 10).tolist()
-    signs[0]=1
-    signs[3]=1
-    signs[4]=1
+    betas, Ls, depth, r0, lambdas, freqs, n_cycles, ts_per_cycle, eps = check_args(args)
 
     G = setup_graph(depth, betas, Ls, r0)
    
