@@ -28,7 +28,9 @@ def make_experiment_result_dict(depth,r0, Ls, betas, experiments, Q_avg_num_resu
     return data
 
 def unpack_array_as_str(arr):
-    return [str(temp) for temp in arr] 
+    if isinstance(arr, np.ndarray):
+        return [str(temp) for temp in arr.tolist()]
+    return [str(arr)]
 
 def make_experiment_command(data):
     lambdas =data["lambdas"].unique() 

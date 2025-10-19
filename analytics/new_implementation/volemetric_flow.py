@@ -39,11 +39,11 @@ def get_Q_system(r0, betas, ls, eps, G):
 def get_Q(r0, betas, ls, eps, G):
     depth = G.nodes[0]["depth"]
 
-    if len(betas) == 1 and depth == 2: 
+    if len(betas) == 1 and depth == 1: 
         Q = get_Q_single(betas[0], ls[0], eps)
         Q = [Q]
         
-    elif len(betas) == 2 and depth == 2:
+    elif len(betas) == 2 and depth == 1:
         Q = get_Q_tandem(r0, betas, ls, eps)
         Q = [Q, Q]
 

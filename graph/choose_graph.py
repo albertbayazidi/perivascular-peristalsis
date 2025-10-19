@@ -7,11 +7,11 @@ def setup_graph(depth, betas, Ls, radius0):
     Make a graph with 1, 2 or n vessels, with lengths Ls and aspect ratios betas
     '''
         
-    if len(betas) == 1 and depth == 2:
+    if len(betas) == 1 and depth == 1:
         G = line_graph(n=2, dim=2, dx=Ls[0])
         G.nodes[0]["depth"] = depth
         
-    elif len(betas) == 2 and depth == 2:
+    elif len(betas) == 2 and depth == 1:
         La, Lb = Ls
         
         G = line_graph(n=3, dim=2, dx=La)

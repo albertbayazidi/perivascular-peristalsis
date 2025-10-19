@@ -36,9 +36,9 @@ def make_experiment_folder(data):
     depth = data["depth"][0]
     betas = data["betas"][0]
 
-    if len(betas) == 1 and depth == 2:
+    if len(betas) == 1 and depth == 1:
         folder = "single_element"
-    elif len(betas) == 2 and depth == 2:
+    elif len(betas) == 2 and depth == 1:
         folder = "tandem_element"
     elif len(betas) == 3 and depth == 2:
         folder = "bifurcated"
