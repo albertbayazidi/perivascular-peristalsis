@@ -1,4 +1,4 @@
-from dev_tools.scripts.experiment_utils import *
+from dev_tools.run_experiments.experiment_utils import *
 
 desimals=3
 
