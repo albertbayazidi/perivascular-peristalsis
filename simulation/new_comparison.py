@@ -30,8 +30,8 @@ def compare(G, r0, Ls, betas, lamdas, freqs, n_cycles=0, ts_per_cycle=40, eps=0.
         
     '''
 
-    #Q_avg_num_results, experiments = run_numerics(G, lamdas, freqs, n_cycles, ts_per_cycle, eps)
-    Q_avg_num_results, experiments = make_dummy_exp_results(G, lamdas, freqs, n_cycles, ts_per_cycle, eps) # Debugging tool
+    Q_avg_num_results, experiments = run_numerics(G, lamdas, freqs, n_cycles, ts_per_cycle, eps)
+    #Q_avg_num_results, experiments = make_dummy_exp_results(G, lamdas, freqs, n_cycles, ts_per_cycle, eps) # Debugging tool
 
     Q_avg_analytical = avg_flow(G, experiments, r0, betas, Ls, eps)
 

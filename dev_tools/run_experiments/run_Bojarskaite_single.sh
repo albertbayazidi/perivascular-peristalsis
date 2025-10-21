@@ -1,19 +1,19 @@
 depth="--depth 1"
 ts_per_cycle="--ts_per_cycle 25"
-n_cycle="25"
+n_cycle="--n_cycle 5"
 
-NONREM_ARGS="--radius0 0.06 --betas 2.167 --eps 0.014 --lambdas 4.0 2.395 1.717 --freq 0.1 0.167 0.233"
-REM_ARGS="--radius0 0.07 --betas 1.714 --eps 0.007  --lambdas 4.0 2.395 1.717 --freq 0.1 0.167 0.233 "
+NONREM_ARGS="--radius0 0.06 --betas 2.167 --eps 0.167 --lambdas 4.0 --freq 0.1"
+REM_ARGS="--radius0 0.075 --betas 1.8 --eps 0.067  --lambdas 4.0 --freq 0.1"
 # non REM sleep
-python -m simulation.new_comparison $depth $ts_per_cycle $NONREM_ARGS --Ls 6.283 &
+#python -m simulation.new_comparison $depth $ts_per_cycle $n_cycle $NONREM_ARGS --Ls 0.637 &
 
-python -m simulation.new_comparison $depth $ts_per_cycle $NONREM_ARGS --Ls 3.762 & 
+#python -m simulation.new_comparison $depth $ts_per_cycle $n_cycle $NONREM_ARGS --Ls 0.318 & 
 
-python -m simulation.new_comparison $depth $ts_per_cycle $NONREM_ARGS --Ls 2.697 & 
+#python -m simulation.new_comparison $depth $ts_per_cycle $n_cycle $NONREM_ARGS --Ls 0.212 & 
 
 # REM sleep
-python -m simulation.new_comparison $depth $ts_per_cycle $REM_ARGS --Ls 3.762 & 
+#python -m simulation.new_comparison $depth $ts_per_cycle $n_cycle $REM_ARGS --Ls 0.637 &  
 
-python -m simulation.new_comparison $depth $ts_per_cycle $REM_ARGS --Ls 6.283 &  
+#python -m simulation.new_comparison $depth $ts_per_cycle $n_cycle $REM_ARGS --Ls 0.318 & 
 
-python -m simulation.new_comparison $depth $ts_per_cycle $REM_ARGS --Ls 2.697 &
+#python -m simulation.new_comparison $depth $ts_per_cycle $n_cycle $REM_ARGS --Ls 0.212 &
