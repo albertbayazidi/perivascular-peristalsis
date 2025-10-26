@@ -13,6 +13,9 @@ from simulation.numerical_bifurcation import run_numerics
 from analytics.new_implementation.avg_flow import avg_flow
 
 from simulation.utils.save import make_experiment_result_dict,save_raw_data 
+from simulation.utils.plot_pressure import save_pressure_field 
+from simulation.utils.plot_velocity_field import save_velocity_at_first_node
+from simulation.utils.plot_net_flow import save_net_flow_at_first_node
 
 def compare(G, r0, Ls, betas, lamdas, freqs, n_cycles=0, ts_per_cycle=40, eps=0.1):
     '''
@@ -77,7 +80,12 @@ def main():
 
     exp_result_dict = make_experiment_result_dict(depth, r0, Ls, betas, experiments, Q_avg_num_results, Q_avg_analytical)
 
-    json_path  = save_raw_data(exp_result_dict);
+    exp_folder, json_path  = save_raw_data(exp_result_dict);
+
+    save_pressure_field(G,experiments, exp_folder)
+    save_velocity_at_first_node(G,experiments, exp_folder)
+    save_net_flow_at_first_node(G, experiments, exp_folder)
+
     return json_path
 
 

@@ -83,4 +83,4 @@ def save_raw_data(data):
         f.write( cmd_string)
 
 
-    return json_path
+    return exp_folder, json_path
