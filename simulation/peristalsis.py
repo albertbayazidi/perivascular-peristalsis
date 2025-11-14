@@ -3,8 +3,6 @@ from xii import *
 import ufl
 import numpy as np
 
-
-from analytics import pvs_network_netflow as pvs
 from analytics.utils import *
 
 '''
@@ -67,7 +65,7 @@ def run_peristalsis_simulation(G, lamdas, freqs, n_cycles, tsteps_per_cycle, eps
         
         # Vasomotion model is expressed via ufl functions depending
         # on constant t_, k_, w_ and s_
-        f, area_inv, res, g, t_, k_, w_, s_, eps_, R1 = peristalsis_as_ufl(G)
+        f, area_inv, res, _, t_, k_, w_, _, eps_, _ = peristalsis_as_ufl(G)
 
         
         for e in G.edges():
@@ -92,7 +90,7 @@ def run_peristalsis_simulation(G, lamdas, freqs, n_cycles, tsteps_per_cycle, eps
 
         
         # also store the graph
-        exp['G'] = G
+        #exp['G'] = G
         
         
     return experiments

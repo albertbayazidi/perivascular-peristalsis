@@ -7,9 +7,8 @@ import matplotlib.pyplot as plt
 
 from analytics.new_implementation.helper_functions import dimensional_Q
 
-def save_net_flow_at_first_node(G, experiments, exp_folder):
-    save_path = os.path.join(exp_folder,"net_flow_at_")
-    
+def save_net_flow_at_first_node(G, experiments, exp_folder, plot_window=400):
+    save_path = os.path.join(exp_folder,"net_flow_at")
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
 
     all_nodes = list(G.nodes())
@@ -17,7 +16,7 @@ def save_net_flow_at_first_node(G, experiments, exp_folder):
     n0 = all_nodes[0]
     pos0 = G.nodes()[n0]['pos']
 
-    for _, exp in enumerate(experiments):
+    for exp_id, exp in enumerate(experiments):
         qps = exp["sol"]
 
         T = exp["T"]
@@ -39,13 +38,13 @@ def save_net_flow_at_first_node(G, experiments, exp_folder):
         
         fig, ax = plt.subplots(1, 1, figsize=(7, 5))
 
-        ax.plot(time_vec, ys)
+        ax.plot(time_vec[:plot_window], ys[:plot_window])
         ax.set_title(f"Net flow at at First Node", fontsize=16)
         ax.set_xlabel("t' [s]", fontsize=16)
         ax.set_ylabel("$\\int_0^{t'} Q'(\\tau) \, \\mathrm{d} \\tau$ [$mm$]", fontsize=16)
         ax.grid(True)
 
-        file_out = os.path.splitext(save_path)[0] + f"_node{n0}.png"
+        file_out = os.path.splitext(save_path)[0] + f"_node{n0}_{exp_id}.png"
         fig.tight_layout()
         fig.savefig(file_out, dpi=300)
         plt.close(fig)

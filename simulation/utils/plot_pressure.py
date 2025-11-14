@@ -15,8 +15,7 @@ import os
 def save_pressure_field(G, experiments, exp_folder):
     save_path = os.path.join(exp_folder,"pressure.png")
 
-    for _, exp in enumerate(experiments):  
-
+    for exp_id, exp in enumerate(experiments):
         sol_list = exp["sol"]
 
         node_positions = np.array([G.nodes()[n]['pos'] for n in G.nodes()])
@@ -44,7 +43,7 @@ def save_pressure_field(G, experiments, exp_folder):
             plt.grid(True)
 
         os.makedirs(os.path.dirname(save_path), exist_ok=True)
-        file_out = os.path.splitext(save_path)[0] + f".png"
+        file_out = os.path.splitext(save_path)[0] + f"_{exp_id}.png"
         plt.tight_layout()
         plt.savefig(file_out, dpi=300)
         plt.close()

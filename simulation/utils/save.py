@@ -1,6 +1,10 @@
 import pandas as pd
 from simulation.utils.save_path_utils import make_experiment_folder
 from dev_tools.run_experiments.experiment_utils import *
+from simulation.utils.plot_net_flow import save_net_flow_at_first_node
+from simulation.utils.plot_pressure import save_pressure_field
+from simulation.utils.plot_velocity_field import save_velocity_at_first_node 
+
 
 def make_experiment_result_dict(depth,r0, Ls, betas, experiments, Q_avg_num_results, Q_avg_analytical):
     data = []
@@ -80,7 +84,13 @@ def save_raw_data(data):
         f.write(json_string)
     
     with open(cmd_path, "w") as f:
-        f.write( cmd_string)
-
+        f.write(cmd_string)
 
     return exp_folder, json_path
+
+def save_plots(G, experiments, exp_folder):
+    save_net_flow_at_first_node(G, experiments, exp_folder)
+    save_pressure_field(G, experiments, exp_folder)
+    save_velocity_at_first_node(G, experiments, exp_folder)
+
+

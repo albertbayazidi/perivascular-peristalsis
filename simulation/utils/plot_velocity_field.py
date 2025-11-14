@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from analytics.new_implementation.helper_functions import dimensional_Q
 
-def save_velocity_at_first_node(G, experiments, exp_folder):
+def save_velocity_at_first_node(G, experiments, exp_folder, plot_window = 100):
     save_path = os.path.join(exp_folder,"velocity.png")
 
     os.makedirs(os.path.dirname(save_path), exist_ok=True)
@@ -13,7 +13,7 @@ def save_velocity_at_first_node(G, experiments, exp_folder):
     n0 = all_nodes[0]
     pos0 = G.nodes()[n0]['pos']
     
-    for _, exp in enumerate(experiments):
+    for exp_id, exp in enumerate(experiments):
         qps = exp["sol"]
         T = exp["T"]
         time_steps = len(qps)
@@ -39,15 +39,20 @@ def save_velocity_at_first_node(G, experiments, exp_folder):
         ]
 
         velocity_at_n0_over_time = np.array(Q_dim_at_n0_over_time) / A0
-        
+
+        mean_val = np.mean(velocity_at_n0_over_time[:plot_window])        
+
         plt.figure(figsize=(7, 5))
-        plt.plot(time_vec, velocity_at_n0_over_time)
+        plt.plot(time_vec[:plot_window], velocity_at_n0_over_time[:plot_window])
+
+        plt.axhline(mean_val, color='red', linestyle='--', label='Center line')
+
         plt.title(f"Velocity at First Node", fontsize=16)
         plt.xlabel("t' [s]", fontsize=16)
         plt.ylabel("Velocity u' [mm/s]", fontsize=16)
         plt.grid(True)
         
-        file_out = os.path.splitext(save_path)[0] + f"_node{n0}.png"
+        file_out = os.path.splitext(save_path)[0] + f"_node{n0}_{exp_id}.png"
         plt.tight_layout()
         plt.savefig(file_out, dpi=300)
         plt.close()

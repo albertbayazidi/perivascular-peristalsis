@@ -28,13 +28,13 @@ def run_numerics(G, lamdas, freqs, n_cycles=0, ts_per_cycle=40, eps=0.1):
     for _, exp in enumerate(experiments):
 
         # Grab parameters 
-        G, n_cycles = [exp[key] for key in ['G', 'n_cycles']]
+        n_cycles = [exp[key] for key in ['n_cycles']][0]
                
         # Compute net flow from simulation
         node_positions = [G.nodes()[n]['pos'] for n in G.nodes()]
         
         outflows_per_node = [[sol[0](pos) for sol in exp['sol']] for pos in node_positions]
-        
+       
         T = n_cycles/exp['freq'] # total simulation time
         T_cycle = 1.0/exp['freq']
         total_time_steps = len(exp['sol'])
