@@ -18,7 +18,7 @@ def dataframe_to_config(df):
         "betas": row0["betas"],
         "r0": float(row0["r0"]),
         "Ls": row0["Ls"],
-        "n_cycles":df["n_cycles"].tolist(),
+        "n_cycles": df["n_cycles"].tolist(),
     }
 
     sweep_params = {
@@ -26,7 +26,7 @@ def dataframe_to_config(df):
         "freq": df["freq"].tolist(),
         "lambdas": df["lambdas"].tolist(),
         "Q_avg_num": format_array(df["Q_avg_num"]),
-        "Q_avg_analytical":format_array(df["Q_avg_analytical"]),
+        "Q_avg_analytical": format_array(df["Q_avg_analytical"]),
     }
 
     config = {**params, "sweep": sweep_params}
@@ -46,7 +46,7 @@ def make_experiment_folder(data):
         folder = "complex"
 
     base_path = os.path.join("results", "comparison", folder)
-    config = dataframe_to_config(data) 
+    config = dataframe_to_config(data)
 
     # Create a unique id for the experiment from parameters
     param_bytes = pickle.dumps(config, protocol=pickle.HIGHEST_PROTOCOL)
@@ -56,9 +56,4 @@ def make_experiment_folder(data):
     os.makedirs(exp_folder, exist_ok=True)
     json_string = to_json(config)
 
-
-    return json_string,exp_folder 
-
-
-
-
+    return json_string, exp_folder

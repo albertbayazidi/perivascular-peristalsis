@@ -12,13 +12,14 @@ import matplotlib.pyplot as plt
 import numpy as np
 import os
 
+
 def save_pressure_field(G, experiments, exp_folder):
-    save_path = os.path.join(exp_folder,"pressure.png")
+    save_path = os.path.join(exp_folder, "pressure.png")
 
     for exp_id, exp in enumerate(experiments):
         sol_list = exp["sol"]
 
-        node_positions = np.array([G.nodes()[n]['pos'] for n in G.nodes()])
+        node_positions = np.array([G.nodes()[n]["pos"] for n in G.nodes()])
         x = node_positions[:, 0]
         y = node_positions[:, 1]
 
@@ -47,4 +48,3 @@ def save_pressure_field(G, experiments, exp_folder):
         plt.tight_layout()
         plt.savefig(file_out, dpi=300)
         plt.close()
-

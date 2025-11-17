@@ -15,9 +15,9 @@ from analytics.new_implementation.avg_flow import avg_flow
 from simulation.utils.save import make_experiment_result_dict,save_raw_data,save_plots
 
 def compare(G, r0, Ls, betas, lamdas, freqs, n_cycles=0, ts_per_cycle=40, eps=0.1):
-    '''
+    """
     Simulate pulsatile flow due to vasomotion in bifurcated vessel (of n generations) and compare with analytic solution
-    
+
     Args:
         r0 (float): inner radius of vessels at rest
         lamdas (list): list of wave lengths
@@ -27,11 +27,11 @@ def compare(G, r0, Ls, betas, lamdas, freqs, n_cycles=0, ts_per_cycle=40, eps=0.
         n_cycles (int): number of cycles to simulate
         tsteps_per_cycle (int): number of time steps per cycle
         eps (float): amplitude of vasomotion
-        
-    '''
+
+    """
 
     Q_avg_num_results, experiments = run_numerics(G, lamdas, freqs, n_cycles, ts_per_cycle, eps)
-    #Q_avg_num_results, experiments = make_dummy_exp_results(G, lamdas, freqs, n_cycles, ts_per_cycle, eps) # Debugging tool
+    # Q_avg_num_results, experiments = make_dummy_exp_results(G, lamdas, freqs, n_cycles, ts_per_cycle, eps) # Debugging tool
 
     Q_avg_analytical = avg_flow(G, experiments, r0, betas, Ls, eps)
 
@@ -49,12 +49,12 @@ def main():
 
     # peristalsis parameters
     args.add_argument("--lambdas", type=float, nargs="+", default=[1])
-    args.add_argument("--freq", type=float, nargs="+", default=[1]) 
+    args.add_argument("--freq", type=float, nargs="+", default=[1])
     args.add_argument("--eps", type=float, default=0.1)
-    
+
     # numerical parameters
     args.add_argument("--ts_per_cycle", nargs="+", type=int, default=[10])
-    args.add_argument("--n_cycles",  nargs="+", type=int, default=0)
+    args.add_argument("--n_cycles", nargs="+", type=int, default=0)
 
     # exstra parameters
     args.add_argument("--depth", help="Constructs of a tree with n generations", nargs="+", type=int, default=1)
@@ -65,19 +65,20 @@ def main():
     betas, Ls, depth, r0, lambdas, freqs, n_cycles, ts_per_cycle, eps = check_args(args)
 
     G = setup_graph(depth, betas, Ls, r0)
-   
+
     if depth > 2:
-        Ls = [G.edges()[e]['length']for e in G.edges()]
-        betas = np.full(len(Ls),betas[0])
+        Ls = [G.edges()[e]["length"] for e in G.edges()]
+        betas = np.full(len(Ls), betas[0])
 
-    if args.plot: plot_tree(G) 
+    if args.plot:
+        plot_tree(G)
 
-    Q_avg_num_results, Q_avg_analytical, experiments = compare(G, r0, Ls, betas, lambdas,
-                                                               freqs, n_cycles, ts_per_cycle, eps)
+    Q_avg_num_results, Q_avg_analytical, experiments = compare(G, r0, Ls, betas, lambdas, freqs, n_cycles, ts_per_cycle, eps)
 
-    exp_result_dict = make_experiment_result_dict(depth, r0, Ls, betas, experiments, Q_avg_num_results, Q_avg_analytical)
+    exp_result_dict = make_experiment_result_dict(depth, r0, Ls, betas, experiments, Q_avg_num_results, Q_avg_analytical,G)
 
-    exp_folder, json_path = save_raw_data(exp_result_dict)
+    exp_folder, json_path = save_raw_data(exp_result_dict, G, experiments, 1, 1)
+
     save_plots(G, experiments, exp_folder)
 
     return json_path

@@ -26,7 +26,7 @@ def _try_add_bifurcation(G, parent_node, new_node_ix, gam, lmbda, normal, sign_c
     D0 = G.edges[parent_edge]["radius"] * 2
 
     # Daughter diameters and lengths
-    D2 = D0 * (gam**3 + 1)**(-1 / 3)
+    D2 = D0 * (gam**3 + 1) ** (-1 / 3)
     D1 = gam * D2
     L2 = lmbda * D2
     L1 = lmbda * 0.6 * D1
@@ -35,21 +35,21 @@ def _try_add_bifurcation(G, parent_node, new_node_ix, gam, lmbda, normal, sign_c
         L1, L2 = L0, L0
 
     # Bifurcation angles
-    cos1 = (D0**4 + D1**4 - (D0**3 - D1**3)**(4 / 3)) / (2 * D0**2 * D1**2)
+    cos1 = (D0**4 + D1**4 - (D0**3 - D1**3) ** (4 / 3)) / (2 * D0**2 * D1**2)
     angle1 = np.degrees(np.arccos(cos1))
-    cos2 = (D0**4 + D2**4 - (D0**3 - D2**3)**(4 / 3)) / (2 * D0**2 * D2**2)
+    cos2 = (D0**4 + D2**4 - (D0**3 - D2**3) ** (4 / 3)) / (2 * D0**2 * D2**2)
     angle2 = np.degrees(np.arccos(cos2))
 
     sign1 = sign_choice
     sign2 = -1 * sign1
-    
+
     branch1 = [sign1, angle1, L1, D1]
-    branch2 = [sign2, angle2, L2, D2] 
+    branch2 = [sign2, angle2, L2, D2]
 
     potential_branches = []
     all_pos = nx.get_node_attributes(G, "pos")
     non_neighbor_edges = [edge for edge in G.edges() if parent_node not in edge]
-    
+
     # Check that both new branches do not cause collisions
     for sign, angle, L, D in [branch1, branch2]:
         new_node_pos = compute_vessel_endpoint(
@@ -66,7 +66,7 @@ def _try_add_bifurcation(G, parent_node, new_node_ix, gam, lmbda, normal, sign_c
             if doIntersect(A, B, C, DD):
                 return False, new_node_ix, [] # Collision detected, abort this bifurcation
 
-        potential_branches.append({'pos': new_node_pos, 'radius': D / 2})
+        potential_branches.append({"pos": new_node_pos, "radius": D / 2})
 
     # If no collisions were found for either branch, add them to the graph
     new_edges = []
@@ -74,10 +74,10 @@ def _try_add_bifurcation(G, parent_node, new_node_ix, gam, lmbda, normal, sign_c
         new_node_ix += 1
         new_edge = (parent_node, new_node_ix)
         G.add_edge(*new_edge)
-        G.nodes[new_node_ix]["pos"] = branch_data['pos']
-        G.edges[new_edge]["radius"] = branch_data['radius']
+        G.nodes[new_node_ix]["pos"] = branch_data["pos"]
+        G.edges[new_edge]["radius"] = branch_data["radius"]
         new_edges.append(new_edge)
-        
+
     return True, new_node_ix, new_edges
 
 
@@ -141,7 +141,7 @@ def make_arterial_tree(N, radius0=1, gam=0.8, L0=3, directions=False, uniform_le
             break
             
     #### Phase 2: Add missing junctions until the tree is complete
-    expected_junctions = 2**(N - 1) - 1
+    expected_junctions = 2 ** (N - 1) - 1
     while len(junctions(G)) < expected_junctions:
         possible_parents = [n for n in G.nodes() if G.out_degree(n) == 0 and G.in_degree(n) > 0]
         if not possible_parents:
