@@ -11,13 +11,13 @@ def format_array(arr):
 
 def dataframe_to_config(df):
     row0 = df.iloc[0]
-
     params = {
         "depth": int(row0["depth"]),
         "epsilon": float(row0["epsilon"]),
         "betas": row0["betas"],
         "r0": float(row0["r0"]),
         "Ls": row0["Ls"],
+        "longest_path": row0["longest_path"],
         "n_cycles": df["n_cycles"].tolist(),
     }
 

@@ -5,16 +5,12 @@ import os
 import pickle
 
 from graphnics import *
-import networkx as nx
 
 from analytics.utils import dimensional_P
 from analytics.utils import dimensional_Q
 
 from dev_tools.run_experiments.experiment_utils import make_cmd_ready
 from simulation.utils.save_path_utils import make_experiment_folder
-from simulation.utils.plot_net_flow import save_net_flow_at_first_node
-from simulation.utils.plot_pressure import save_pressure_field
-from simulation.utils.plot_velocity_field import save_velocity_at_first_node
 
 
 def make_experiment_result_dict(depth, r0, Ls, betas, experiments, Q_avg_num_results, Q_avg_analytical,G):
@@ -30,6 +26,7 @@ def make_experiment_result_dict(depth, r0, Ls, betas, experiments, Q_avg_num_res
                 "depth": depth,
                 "n_cycles": n_cycles,
                 "ts_per_cycle": ts_per_cycle,
+                "longest_path": G.nodes[0]["longest_path"],
                 "epsilon": epsilon,
                 "freq": freq,
                 "lambdas": lamda,
@@ -137,9 +134,6 @@ def save_exp(G, experiments, exp_folder, mu, rho):
         q_space = qps[0][0].function_space()
         p_space = qps[0][1].function_space()
 
-        print("q_space", q_space)
-        print("p_space", p_space)
-
         q_dim_func = Function(q_space, name="flux") 
         p_dim_func = Function(p_space, name="pressure")        
 
@@ -156,7 +150,6 @@ def save_exp(G, experiments, exp_folder, mu, rho):
             pressure_group = h5_p.create_group("pressure")
 
             for ix, (q, p) in enumerate(qps):
-                print("iteration", ix)
                 q_dim_expr = dimensional_Q(q, k, w, eps, R0)
                 p_dim_expr = dimensional_P(p, k, w, eps, R0, mu, rho) 
 
@@ -171,16 +164,5 @@ def save_exp(G, experiments, exp_folder, mu, rho):
 
                 flux_group.create_dataset(f"vector_{ix}", data=q_data)
                 pressure_group.create_dataset(f"vector_{ix}", data=p_data)
-            
-            count_q = len(q_dim_func.vector().get_local())
-            count_p = len(p_dim_func.vector().get_local())
 
             flux_group.create_dataset("iteration", data=ix)
-
-            print("flux V: ",count_q, "pressure M: ",count_p)
-
-def save_plots(G, experiments, exp_folder):
-    pass
-    #save_net_flow_at_first_node(G, experiments, exp_folder)
-    #save_pressure_field(G, experiments, exp_folder)
-    #save_velocity_at_first_node(G, experiments, exp_folder)

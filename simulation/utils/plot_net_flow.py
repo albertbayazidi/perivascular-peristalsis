@@ -6,7 +6,7 @@ from graphnics import *
 from xii import *
 import matplotlib.pyplot as plt
 
-def save_net_flow_at_first_node(G, qps_rem, qps_non_rem, exp_data_rem, exp_data_non_rem, exp_folder_rem, exp_folder_non_rem,id, plot_window=400):
+def save_net_flow_at_first_node(G, qps_rem, qps_non_rem, exp_data_rem, exp_data_non_rem, exp_folder_rem, exp_folder_non_rem,id, plot_window=-1):
     
     save_path_rem = os.path.join(exp_folder_rem,"plots","net_flow")
     save_path_non_rem = os.path.join(exp_folder_non_rem,"plots","net_flow")

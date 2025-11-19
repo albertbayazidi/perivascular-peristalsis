@@ -8,55 +8,65 @@ from simulation.utils.plot_pressure import save_pressure_field
 
 desimals=3
 
-depth = 5           # must be tree or greater
-ts_per_cycle = 50
+depth = 1
+Ls_array = Ls_array_single = [0.6]  # depth 1
+#Ls_array = Ls_array_tandem = [0.3, 0.3] # depth 1 
+#Ls_array = Ls_array_bifurcated = [0.2, 0.2, 0.2] # depth 2 
+#Ls_array = Ls_array_complex = [0.23]  # depth greater or equal 3 
+
+ts_per_cycle = 15
 
 c_pial = 1.96 # (mm/s)
 
 # Data from Bojarskaite article
 vasomotion_freq = np.round(np.linspace(0.1, 0.3, 3,),desimals) # Hz
 vasomotion_lambda = np.round(c_pial / vasomotion_freq,desimals) # mm
-Ls_array = [0.6]
 
 # NONREM
 NON_REM_r0 = 0.006 # 6 µm
 NON_REM_re = 0.013 # 13 µm
-NON_REM_betas = f"{NON_REM_re/NON_REM_r0:.{desimals}f}"
+NON_REM_betas = np.full_like(Ls_array,float(f"{NON_REM_re/NON_REM_r0:.{desimals}f}"))
 
 NON_REM_vasomotion_eps=f"{0.001/NON_REM_r0:.{desimals}f}" 
 
 # REM
 REM_r0 = 0.0075 # 7.5 µm
 REM_re = 0.0135 # 13.5 µm
-REM_betas = f"{REM_re/REM_r0:.{desimals}f}"
+REM_betas = np.full_like(Ls_array,float(f"{REM_re/REM_r0:.{desimals}f}"))
 
 REM_vasomotion_eps=f"{0.0005/REM_r0:.{desimals}f}"
 
 vasomotion_lambda_str = [str(v) for v in vasomotion_lambda]
 vasomotion_freq_str = [str(v) for v in vasomotion_freq]
+Ls_array_str = [str(v) for v in Ls_array]
+NON_REM_betas_str = [str(v) for v in NON_REM_betas]
+REM_betas_str = [str(v) for v in REM_betas]
+
 
 def input_args(depth):
     inputs = [
         *make_cmd_ready("depth", depth),
         *make_cmd_ready("ts_per_cycle", ts_per_cycle),
+        "--Ls", *Ls_array_str, 
         "--lambdas", *vasomotion_lambda_str,
-        "--freq", *vasomotion_freq_str
+        "--freq", *vasomotion_freq_str,
     ]
     return inputs 
 
 NON_REM_ARGS = [
     *make_cmd_ready("radius0", NON_REM_r0),
-    *make_cmd_ready("betas", NON_REM_betas),
+    "--betas", *NON_REM_betas_str,
     *make_cmd_ready("eps", NON_REM_vasomotion_eps)]
 
 REM_ARGS = [
     *make_cmd_ready("radius0", REM_r0),
-    *make_cmd_ready("betas", REM_betas),
+    "--betas", *REM_betas_str,
     *make_cmd_ready("eps", REM_vasomotion_eps)]
 
 with ProcessPoolExecutor() as main_executor:
-    future_non_rem = main_executor.submit(run_experiments, [*NON_REM_ARGS, *input_args(depth)], Ls_array)
-    future_rem = main_executor.submit(run_experiments, [*REM_ARGS, *input_args(depth)], Ls_array)
+    future_non_rem = main_executor.submit(run_experiments, [*NON_REM_ARGS, *input_args(depth)])
+
+    future_rem = main_executor.submit(run_experiments, [*REM_ARGS, *input_args(depth)])
     
     non_rem_paths = future_non_rem.result()
     rem_paths = future_rem.result()

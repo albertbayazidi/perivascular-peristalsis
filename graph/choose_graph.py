@@ -1,6 +1,9 @@
 from graphnics import *
 from xii import *
+import networkx as nx
+
 from graph.generate_simple_arterial_tree import make_arterial_tree
+from graph.graph_utils import add_position_weights 
 
 def setup_graph(depth, betas, Ls, radius0):
     """
@@ -62,5 +65,8 @@ def setup_graph(depth, betas, Ls, radius0):
     nx.set_edge_attributes(G, radius2_dict, "radius2")
 
     G.make_mesh(1)
+
+    add_position_weights(G)
+    G.nodes[0]["longest_path"]  = nx.dag_longest_path_length(G, weight='weight')
 
     return G

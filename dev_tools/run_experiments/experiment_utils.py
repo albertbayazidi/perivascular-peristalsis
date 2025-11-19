@@ -49,10 +49,9 @@ def format_cmd_for_json(cmd_list):
     return cmd_dict
 
 def run_single_experiment(args_and_L):
-    args, L = args_and_L
+    args = args_and_L
     cmd = ["python", "-m", "simulation.new_comparison"]
     cmd.extend(args)
-    cmd.extend(["--Ls", str(L)])
     print(" ".join(cmd))
     result = subprocess.run(cmd, stdout=subprocess.PIPE, encoding="utf-8")
     last_line = result.stdout.strip().split("\n")[-1] if result.stdout else ""
@@ -97,7 +96,7 @@ def group_matching_experiments(non_rem_path_list, rem_path_list):
 
     return matched_pairs
 
-def run_experiments(args, Ls_array):
+def run_experiments(args):
     freqs = args[-3:]
     lambdas = args[-7:-4]
     results_list = []
@@ -116,7 +115,7 @@ def run_experiments(args, Ls_array):
                 temp_tasks.append(item)
         modified_tasks.append(temp_tasks)
 
-    tot_tasks = [(task, L) for task in modified_tasks for L in Ls_array]
+    tot_tasks = [(task) for task in modified_tasks]
 
     with ProcessPoolExecutor() as executor:
         results = list(executor.map(run_single_experiment, tot_tasks))

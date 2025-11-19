@@ -22,3 +22,10 @@ def junctions(G):
 
     return junction_points
 
+def add_position_weights(G):
+    for u, v in G.edges():
+        p1 = np.array(G.nodes[u]["pos"])
+        p2 = np.array(G.nodes[v]["pos"])
+        w = np.linalg.norm(p1 - p2)
+        G.edges[u, v]["weight"] = w
+

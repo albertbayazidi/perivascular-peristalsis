@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import simulation.utils.common_plotting_style as ps
 
-def save_velocity_at_first_node(G, qps_rem, qps_non_rem, exp_data_rem, exp_data_non_rem, exp_folder_rem, exp_folder_non_rem, id, plot_window=100):
+def save_velocity_at_first_node(G, qps_rem, qps_non_rem, exp_data_rem, exp_data_non_rem, exp_folder_rem, exp_folder_non_rem, id, plot_window=-1):
 
     save_path_rem = os.path.join(exp_folder_rem, "plots","velocity")
     save_path_non_rem = os.path.join(exp_folder_non_rem, "plots","velocity")
