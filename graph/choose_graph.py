@@ -52,6 +52,9 @@ def setup_graph(depth, betas, Ls, radius0):
         G.compute_edge_lengths()
         G.nodes[0]["depth"] = depth
 
+        add_position_weights(G)
+        G.nodes[0]["longest_path"]  = nx.dag_longest_path_length(G, weight='weight')
+
         return G
 
     # Add inner and outer radiuses, and beta values, as edge attributes
@@ -68,5 +71,4 @@ def setup_graph(depth, betas, Ls, radius0):
 
     add_position_weights(G)
     G.nodes[0]["longest_path"]  = nx.dag_longest_path_length(G, weight='weight')
-
     return G

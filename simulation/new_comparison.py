@@ -12,7 +12,7 @@ from dev_tools.check_experiment_args import check_args
 from simulation.numerical import run_numerics
 from analytics.new_implementation.avg_flow import avg_flow
 
-from simulation.utils.save import make_experiment_result_dict,save_raw_data,save_plots
+from simulation.utils.save import make_experiment_result_dict,save_raw_data
 
 def compare(G, r0, Ls, betas, lamdas, freqs, n_cycles=0, ts_per_cycle=40, eps=0.1):
     """
@@ -31,7 +31,7 @@ def compare(G, r0, Ls, betas, lamdas, freqs, n_cycles=0, ts_per_cycle=40, eps=0.
     """
 
     Q_avg_num_results, experiments = run_numerics(G, lamdas, freqs, n_cycles, ts_per_cycle, eps)
-    # Q_avg_num_results, experiments = make_dummy_exp_results(G, lamdas, freqs, n_cycles, ts_per_cycle, eps) # Debugging tool
+    #Q_avg_num_results, experiments = make_dummy_exp_results(G, lamdas, freqs, n_cycles, ts_per_cycle, eps) # Debugging tool
 
     Q_avg_analytical = avg_flow(G, experiments, r0, betas, Ls, eps)
 
@@ -70,16 +70,13 @@ def main():
         Ls = [G.edges()[e]["length"] for e in G.edges()]
         betas = np.full(len(Ls), betas[0])
 
-    if args.plot:
-        plot_tree(G)
+    if args.plot: plot_tree(G)
 
     Q_avg_num_results, Q_avg_analytical, experiments = compare(G, r0, Ls, betas, lambdas, freqs, n_cycles, ts_per_cycle, eps)
 
     exp_result_dict = make_experiment_result_dict(depth, r0, Ls, betas, experiments, Q_avg_num_results, Q_avg_analytical,G)
 
-    exp_folder, json_path = save_raw_data(exp_result_dict, G, experiments, 1, 1)
-
-    save_plots(G, experiments, exp_folder)
+    _, json_path = save_raw_data(exp_result_dict, G, experiments, 1, 1)
 
     return json_path
 

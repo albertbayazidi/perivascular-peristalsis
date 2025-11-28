@@ -50,9 +50,7 @@ def construct_P_matrix(indices, paths, l, R, gamma):
     for (k, path) in enumerate(paths):
         x_n = 0.0
         n = 0
-        string = f"" 
         for n in path:
-            string += f"e^(i*{x_n})*P_{n}/gamma_{n} +"  
             A[I+k, n] = np.exp(-z*x_n)/gamma[n]
             x_n += l[n]
 
@@ -71,18 +69,17 @@ def construct_dP_matrix(R, l, Delta, indices, paths, P,gamma):
     b = np.zeros(E, dtype=complex) 
     
     # Define the real linear system A P = b 
-    for (i, j, k) in indices:
+    for row,(i, j, k) in enumerate(indices):
         # Convention: junction index == index of mother edge (in
         # bifurcating trees)
-        I = i 
 
         # Set right matrix columns for this junction constraint
-        A[I, i] = 1.0/(R[i]* l[i])
-        A[I, j] = - 1.0/(R[j]*l[j])
-        A[I, k] = - 1.0/(R[k]*l[k])
+        A[row, i] = 1.0/(R[i]* l[i])
+        A[row, j] = - 1.0/(R[j]*l[j])
+        A[row, k] = - 1.0/(R[k]*l[k])
 
         # Set right vector row for this junction constraint
-        b[I] = (gamma[i] * Delta[i]*_alpha(l[i], P[i], R[i]) 
+        b[row] = (gamma[i] * Delta[i]*_alpha(l[i], P[i], R[i]) 
                 - gamma[j] * Delta[j]*_alpha(l[j], P[j], R[j])
                 - gamma[k] * Delta[k]*_alpha(l[k], P[k], R[k]))
 

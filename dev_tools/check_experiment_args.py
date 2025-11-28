@@ -19,6 +19,11 @@ def check_args(args):
     if len(betas) != len(Ls):
         print("Error: The number of 'betas' and 'Ls' values must be equal.")
         sys.exit(1)
+    
+    if depth >= 3:
+        if len(Ls) > 1:
+            print("Error: More then one value is incorrect for trees over 2 generations.")
+            sys.exit(1)
 
     if depth == 2:
         if len(betas) != 3 or len(Ls) != 3:

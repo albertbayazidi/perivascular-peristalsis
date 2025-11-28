@@ -11,6 +11,8 @@ import random
 random.seed(42)
 
 
+from collections import deque
+
 def _try_add_bifurcation(G, parent_node, new_node_ix, gam, lmbda, normal, sign_choice, uniform_lengths, L0):
     """
     Attempts to add a new bifurcation at a given parent_node.
@@ -86,11 +88,8 @@ def make_arterial_tree(N, radius0=1, gam=0.8, L0=3, directions=False, uniform_le
     N (int): number of levels in the arterial tree
     radius0 (float): radius of first vessel
     gam (float): ratio between daughter vessel radii
-    directions (list): vector of choices (+-1) of vessel direction. If no vector is given this is assigned randomly.
+    directions (list): vector of choices (+-1) of vessel direction.
     uniform_lengths (bool): uniform branch length
-
-    Uniform lengths is typically only of interest in numerical tests
-    Assigning directions is useful for reproducability of results.
     """
     # Parameters
     # Origin location
@@ -99,13 +98,10 @@ def make_arterial_tree(N, radius0=1, gam=0.8, L0=3, directions=False, uniform_le
     D0 = 2 * radius0
     lmbda = L0 / D0
 
-    # By convention we chose gam <=1 so D1 will always be smaller or equal to D2
     if gam > 1:
         raise Exception("Please choose a value for gamma lower or equal to 1")
 
     # Surface normal function
-    # The surface normal here is fixed because we want to stay in the x,y plane.
-    # But this could be the normal of any surface.
     def normal(x, y, z):
         return [0, 0, 1]
 
@@ -122,44 +118,34 @@ def make_arterial_tree(N, radius0=1, gam=0.8, L0=3, directions=False, uniform_le
     nx.set_node_attributes(G, {0: p0}, "pos")
     nx.set_edge_attributes(G, D0 / 2, "radius")
     G.nodes[1]["pos"] = np.asarray(p0) + np.asarray(initial_direction) * L0
+    
     new_node_ix = 1
+    current_junction_count = 0
+    
+    # Target number of junctions for N levels (binary tree internal nodes = 2^(N-1) - 1)
+    target_junctions = 2 ** (N - 1) - 1
 
-    #### Phase 1: Iteratively build the tree for N generations
-    previous_edges = [(0, 1)]
-    for igen in range(1, N):
-        current_edges = []
-        for u, v in previous_edges:
-            parent_node = v
-            success, new_node_ix, new_edges = _try_add_bifurcation(
-                G, parent_node, new_node_ix, gam, lmbda, normal, get_sign(), uniform_lengths, L0
-            )
-            if success:
-                current_edges.extend(new_edges)
-        previous_edges = current_edges
-        if not previous_edges:
-            print(f"Warning: Tree growth stopped at generation {igen} due to collisions.")
-            break
-            
-    #### Phase 2: Add missing junctions until the tree is complete
-    expected_junctions = 2 ** (N - 1) - 1
-    while len(junctions(G)) < expected_junctions:
-        possible_parents = [n for n in G.nodes() if G.out_degree(n) == 0 and G.in_degree(n) > 0]
-        if not possible_parents:
-            print("Warning: Could not add all missing junctions. No valid bifurcation points remain.")
-            break
+    growth_queue = deque([1])
 
-        bifurcation_added_in_pass = False
-        for parent_node in possible_parents:
-            success, new_node_ix, _ = _try_add_bifurcation(
-                G, parent_node, new_node_ix, gam, lmbda, normal, get_sign(), uniform_lengths, L0
-            )
-            if success:
-                bifurcation_added_in_pass = True
-                break # Restart while-loop with the updated graph
+    while current_junction_count < target_junctions and growth_queue:
+        # Pop the oldest available node (First In, First Out) to ensure balanced growth
+        parent_node = growth_queue.popleft()
 
-        if not bifurcation_added_in_pass:
-            print("Warning: Could not find a valid location for any new junction.")
-            break
+        success, new_node_ix, new_edges = _try_add_bifurcation(
+            G, parent_node, new_node_ix, gam, lmbda, normal, get_sign(), uniform_lengths, L0
+        )
+
+        if success:
+            current_junction_count += 1
+            # Add the newly created tips to the back of the queue
+            for _, new_child_node in new_edges:
+                growth_queue.append(new_child_node)
+        else:
+            pass
+
+    # Validation warnings
+    if current_junction_count < target_junctions:
+        print(f"Warning: Tree growth stopped early. Generated {current_junction_count} junctions (Target: {target_junctions}). Queue empty due to collisions.")
 
     # Convert to FenicsGraph
     G_ = nx.convert_node_labels_to_integers(G)
