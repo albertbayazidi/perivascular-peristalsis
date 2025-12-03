@@ -51,7 +51,8 @@ def plot_tree(G, highlight_nodes=None):
                      arrowsize=0.1, ax=ax, alpha=0.5, style="solid")
 
     ax.legend(handles=[p for p in ax.patches if isinstance(p, plt.Circle)],
-              loc="upper center", bbox_to_anchor=(0.5, -0.05),fancybox=True, shadow=True)
+              loc="upper center", bbox_to_anchor=(0.5, -0.15),fancybox=True, shadow=True, ncol=3) # use -0.15 or 1.3
+
     ax.tick_params(left=True, bottom=True, labelleft=True, labelbottom=True, labelsize=12)
     ax.set_aspect("equal", adjustable="box") 
     fig.tight_layout()

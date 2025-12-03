@@ -12,10 +12,14 @@ def save_velocity_at_nodes(G, qps_non_rem, qps_rem, exp_data_non_rem, exp_data_r
                            exp_folder_non_rem, exp_folder_rem, 
                            target_node_indices=None, plot_window=-1):
 
-    if isinstance(plot_window, (list, tuple)):
-        start, end = plot_window
+    target_t_start = None
+    target_t_end = None
+    if plot_window == -1:
+        pass 
+    elif isinstance(plot_window, (list, tuple)):
+        target_t_start, target_t_end = plot_window
     else:
-        start, end = 0, plot_window 
+        target_t_start, target_t_end = 0, plot_window
 
     save_path_rem = os.path.join(exp_folder_rem, "plots", "velocity")
     save_path_non_rem = os.path.join(exp_folder_non_rem, "plots", "velocity")
@@ -43,6 +47,9 @@ def save_velocity_at_nodes(G, qps_non_rem, qps_rem, exp_data_non_rem, exp_data_r
     time_steps_rem = len(qps_rem)
     time_vec_rem = np.linspace(0, T_rem, time_steps_rem)
 
+    idx_start_nr, idx_end_nr = ps.get_time_indices(time_vec_non_rem, target_t_start, target_t_end)
+    idx_start_r, idx_end_r = ps.get_time_indices(time_vec_rem, target_t_start, target_t_end)
+
     for node_idx in target_node_indices:
         
         if node_idx >= len(all_nodes):
@@ -66,14 +73,23 @@ def save_velocity_at_nodes(G, qps_non_rem, qps_rem, exp_data_non_rem, exp_data_r
         velocity_non_rem = np.array(outflow_non_rem) / Area
         velocity_rem = np.array(outflow_rem) / Area
 
-        mean_val_non_rem = np.mean(velocity_non_rem[start:end])
-        mean_val_rem = np.mean(velocity_rem[start:end])
+
+        v_nr_sliced = velocity_non_rem[idx_start_nr:idx_end_nr]
+        t_nr_sliced = time_vec_non_rem[idx_start_nr:idx_end_nr]
+        
+        # Slice REM
+        v_r_sliced = velocity_rem[idx_start_r:idx_end_r]
+        t_r_sliced = time_vec_rem[idx_start_r:idx_end_r]
+
+        # Calculate Means based on the SLICED window
+        mean_val_non_rem = np.mean(v_nr_sliced) if len(v_nr_sliced) > 0 else 0
+        mean_val_rem = np.mean(v_r_sliced) if len(v_r_sliced) > 0 else 0
 
         # Plotting
         fig, ax = plt.subplots(figsize=ps.FIG_SIZE)
         
-        ax.plot(time_vec_non_rem[start:end], velocity_non_rem[start:end], **ps.STYLE_NON_REM)
-        ax.plot(time_vec_rem[start:end], velocity_rem[start:end], **ps.STYLE_REM)
+        ax.plot(t_nr_sliced, v_nr_sliced, **ps.STYLE_NON_REM)
+        ax.plot(t_r_sliced, v_r_sliced, **ps.STYLE_REM)
         
         ax.axhline(mean_val_non_rem, **ps.STYLE_MEAN_NON_REM)
         ax.axhline(mean_val_rem, **ps.STYLE_MEAN_REM)
