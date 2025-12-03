@@ -75,7 +75,7 @@ def make_experiment_command(data):
         "--freq",*unpack_array_as_str(freq),
     ]
 
-    cmd = ["python", "-m", "simulation.new_comparison"]
+    cmd = ["python", "-m", "simulation.main"]
     cmd.extend(inputs)
 
     return " ".join(cmd)

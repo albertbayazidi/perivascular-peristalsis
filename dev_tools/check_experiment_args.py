@@ -11,10 +11,7 @@ def check_args(args):
     ts_per_cycle = args.ts_per_cycle
     eps = args.eps
 
-    if n_cycles == 0:
-        n_cycles = ts_per_cycle
-    else:
-        print("Warning: 'n_cycles' was provided and may cause inconsistent file storage.")
+    if n_cycles == 0: n_cycles = ts_per_cycle
 
     if len(betas) != len(Ls):
         print("Error: The number of 'betas' and 'Ls' values must be equal.")

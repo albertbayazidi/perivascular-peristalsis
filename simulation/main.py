@@ -70,7 +70,7 @@ def main():
         Ls = [G.edges()[e]["length"] for e in G.edges()]
         betas = np.full(len(Ls), betas[0])
 
-    if args.plot: plot_tree(G)
+    if args.plot: plot_tree(G,[0])
 
     Q_avg_num_results, Q_avg_analytical, experiments = compare(G, r0, Ls, betas, lambdas, freqs, n_cycles, ts_per_cycle, eps)
 

@@ -6,17 +6,20 @@ from graphnics import *
 from xii import *
 import matplotlib.pyplot as plt
 
-def save_net_flow_at_first_node(G, qps_rem, qps_non_rem, exp_data_rem, exp_data_non_rem, exp_folder_rem, exp_folder_non_rem,id, plot_window=-1):
+def save_net_flow_at_nodes(G, qps_rem, qps_non_rem, exp_data_rem, exp_data_non_rem, 
+                           exp_folder_rem, exp_folder_non_rem, id, 
+                           target_node_indices=None, plot_window=-1):
     
-    save_path_rem = os.path.join(exp_folder_rem,"plots","net_flow")
-    save_path_non_rem = os.path.join(exp_folder_non_rem,"plots","net_flow")
+    save_path_rem = os.path.join(exp_folder_rem, "plots", "net_flow")
+    save_path_non_rem = os.path.join(exp_folder_non_rem, "plots", "net_flow")
 
     os.makedirs(save_path_rem, exist_ok=True)
     os.makedirs(save_path_non_rem, exist_ok=True)
 
     all_nodes = list(G.nodes())
-    n0 = all_nodes[0]
-    pos0 = G.nodes()[n0]["pos"]
+
+    if target_node_indices is None:
+        target_node_indices = [0]
 
     T_rem = exp_data_rem["T"]
     T_non_rem = exp_data_non_rem["T"]
@@ -26,32 +29,45 @@ def save_net_flow_at_first_node(G, qps_rem, qps_non_rem, exp_data_rem, exp_data_
 
     time_vec_rem = np.linspace(0, T_rem, time_steps_rem)
     time_vec_non_rem = np.linspace(0, T_non_rem, time_steps_non_rem)
-
-    outflow_rem = [sol[0](pos0) for sol in qps_rem]
-    outflow_non_rem = [sol[0](pos0) for sol in qps_non_rem]
-
+    
     dt_rem = T_rem / time_steps_rem
     dt_non_rem = T_non_rem / time_steps_non_rem
 
-    ys_rem = np.cumsum(outflow_rem) * dt_rem
-    ys_non_rem = np.cumsum(outflow_non_rem) * dt_non_rem
+    for node_idx in target_node_indices:
+        
+        if node_idx >= len(all_nodes):
+            print(f"Warning: Node index {node_idx} out of bounds. Skipping.")
+            continue
 
-    fig, ax = plt.subplots(figsize=ps.FIG_SIZE)
+        current_node_id = all_nodes[node_idx]
+        pos_curr = G.nodes()[current_node_id]["pos"]
 
-    ax.plot(time_vec_rem[:plot_window], ys_rem[:plot_window], **ps.STYLE_REM)
-    ax.plot(time_vec_non_rem[:plot_window], ys_non_rem[:plot_window], **ps.STYLE_NON_REM)
+        outflow_rem = [sol[0](pos_curr) for sol in qps_rem]
+        outflow_non_rem = [sol[0](pos_curr) for sol in qps_non_rem]
 
-    ax.set_title("Net flow at First Node", fontsize=16)
-    ax.set_xlabel("t' [s]", fontsize=16)
-    ax.set_ylabel("$\\int_0^{t'} Q'(\\tau) \\, \\mathrm{d} \\tau$ [$mm$]", fontsize=16)
-    ax.grid(True)
-    ax.legend()
-    fig.tight_layout() 
-    
-    file_out_rem = os.path.join(save_path_rem,f"net_flow_at_node{str(n0)}_{str(id)}.png") 
-    fig.savefig(file_out_rem, dpi=300)
-    
-    file_out_non_rem = os.path.join(save_path_non_rem,f"net_flow_at_node{str(n0)}_{str(id)}.png")  
-    fig.savefig(file_out_non_rem, dpi=300)
+        ys_rem = np.cumsum(outflow_rem) * dt_rem
+        ys_non_rem = np.cumsum(outflow_non_rem) * dt_non_rem
 
-    plt.close(fig)
+        # Plotting
+        fig, ax = plt.subplots(figsize=ps.FIG_SIZE)
+
+        ax.plot(time_vec_rem[:plot_window], ys_rem[:plot_window], **ps.STYLE_REM)
+        ax.plot(time_vec_non_rem[:plot_window], ys_non_rem[:plot_window], **ps.STYLE_NON_REM)
+
+        ax.set_title(f"Net flow at Node {node_idx}", fontsize=16)
+        ax.set_xlabel("t' [sec]", fontsize=16)
+        ax.set_ylabel("$\\int_0^{t'} Q'(\\tau) \\, \\mathrm{d} \\tau$ [$mm$]", fontsize=16)
+        ax.grid(True)
+        ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.05),fancybox=True, shadow=True)
+        fig.tight_layout() 
+        
+        # Unique filename using node index
+        filename = f"net_flow_at_node_{str(node_idx)}_{str(id)}.png"
+        
+        file_out_rem = os.path.join(save_path_rem, filename) 
+        fig.savefig(file_out_rem, dpi=300)
+        
+        file_out_non_rem = os.path.join(save_path_non_rem, filename)  
+        fig.savefig(file_out_non_rem, dpi=300)
+
+        plt.close(fig)

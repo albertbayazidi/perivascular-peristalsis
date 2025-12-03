@@ -1,7 +1,7 @@
 import numpy as np
 
 from simulation.peristalsis import *
-
+from simulation.interacting_peristalsis import * 
 
 def run_numerics(G, lamdas, freqs, n_cycles=0, ts_per_cycle=40, eps=0.1):
     """
@@ -20,6 +20,26 @@ def run_numerics(G, lamdas, freqs, n_cycles=0, ts_per_cycle=40, eps=0.1):
         eps (float): amplitude of vasomotion
 
     """
+    state = "interacting"
+    if state == "interacting":
+        u, v = list(G.edges())[0]
+        R0 = G.edges[u, v]["radius1"]
+        if (R0 == 0.006):       # NONREM
+            lambda2 = 125       # mm
+            freqs2 = 8          # Hz
+            eps2 = 0.0001625/0.006 
+        else:                   # REM 
+            lambda2 = 90        # mm
+            freqs2 = 11.11      # Hz
+            eps2 = 0.000125/0.0075
+
+        experiments = run_interacting_peristalsis_simulation(G=G, lamdas=lamdas, lambda2=lambda2,
+                                                             freqs=freqs, freqs2=freqs2, n_cycles=n_cycles,
+                                                             tsteps_per_cycle=ts_per_cycle, eps=eps, eps2=eps2)
+        
+        dummy_num_results = np.full(len(lamdas) * len(freqs) ,0)
+        return dummy_num_results, experiments
+
 
     # Run experiments and get results
     experiments = run_peristalsis_simulation(G=G, lamdas=lamdas, freqs=freqs, 

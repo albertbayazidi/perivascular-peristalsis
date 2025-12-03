@@ -2,11 +2,12 @@ import numpy as np
 
 from simulation.utils.load import load_raw_data
 from dev_tools.run_experiments.experiment_utils import *
-from simulation.utils.plot_velocity_field import save_velocity_at_first_node
-from simulation.utils.plot_net_flow import save_net_flow_at_first_node
-from simulation.utils.plot_pressure import save_pressure_field
+from simulation.utils.plot_velocity_field import save_velocity_at_nodes
+from simulation.utils.plot_net_flow import save_net_flow_at_nodes
 
-desimals=3
+desimals = 3
+plot_window = 300
+target_nodes = [0,1,3]
 
 depth = 1
 Ls_array = Ls_array_single = [0.6]  # depth 1
@@ -14,7 +15,8 @@ Ls_array = Ls_array_single = [0.6]  # depth 1
 #Ls_array = Ls_array_bifurcated = [0.2, 0.2, 0.2] # depth 2 
 #Ls_array = Ls_array_complex = [0.23]  # depth greater or equal 3 
 
-ts_per_cycle = 15
+ts_per_cycle = 5
+n_cycles = 1000
 
 c_pial = 1.96 # (mm/s)
 
@@ -47,6 +49,7 @@ def input_args(depth):
     inputs = [
         *make_cmd_ready("depth", depth),
         *make_cmd_ready("ts_per_cycle", ts_per_cycle),
+        *make_cmd_ready("n_cycles",n_cycles),
         "--Ls", *Ls_array_str, 
         "--lambdas", *vasomotion_lambda_str,
         "--freq", *vasomotion_freq_str,
@@ -93,15 +96,15 @@ for match in matched_experiments:
     exp_data_file_path_non_rem = f"{match['non_rem']}/exp_data/exp_{id}.pkl"
 
     _, qps_non_rem, exp_data_non_rem  = load_raw_data(graph_path, pressure_path_rem, flux_path_rem, exp_data_file_path_rem)
-    G, qps_rem, exp_data_rem = load_raw_data(graph_path, pressure_path_non_rem,
-                                                   flux_path_non_rem, exp_data_file_path_non_rem)
-    
-    save_velocity_at_first_node(G, qps_rem, qps_non_rem, exp_data_rem, exp_data_non_rem, 
-                                f"{match['rem']}", f"{match['non_rem']}",id)
+    G, qps_rem, exp_data_rem = load_raw_data(graph_path, pressure_path_non_rem,flux_path_non_rem, exp_data_file_path_non_rem)
 
-    save_net_flow_at_first_node(G, qps_rem, qps_non_rem, exp_data_rem,exp_data_non_rem,
-                                f"{match['rem']}",f"{match['non_rem']}",id)
+    save_velocity_at_nodes(G, qps_rem, qps_non_rem, exp_data_rem, exp_data_non_rem, 
+                                f"{match['rem']}", f"{match['non_rem']}",id,
+                           plot_window=plot_window, target_node_indices=target_nodes)
 
+    save_net_flow_at_nodes(G, qps_rem, qps_non_rem, exp_data_rem, exp_data_non_rem,
+                           f"{match['rem']}", f"{match['non_rem']}", id,
+                           plot_window=plot_window, target_node_indices=target_nodes)
 """
 PRESSURE
 need some sort of interpolation to handle areas between dots

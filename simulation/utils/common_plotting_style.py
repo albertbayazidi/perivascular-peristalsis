@@ -26,4 +26,4 @@ STYLE_MEAN_NON_REM = {
     'label': 'Non-REM Mean'
 }
 
-FIG_SIZE = (7, 5) 
+FIG_SIZE = (12, 5) 
