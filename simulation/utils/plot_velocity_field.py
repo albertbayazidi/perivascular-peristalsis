@@ -8,9 +8,14 @@ import simulation.utils.common_plotting_style as ps
 import os
 import matplotlib.pyplot as plt
 
-def save_velocity_at_nodes(G, qps_rem, qps_non_rem, exp_data_rem, exp_data_non_rem, 
-                           exp_folder_rem, exp_folder_non_rem, id, 
+def save_velocity_at_nodes(G, qps_non_rem, qps_rem, exp_data_non_rem, exp_data_rem, 
+                           exp_folder_non_rem, exp_folder_rem, 
                            target_node_indices=None, plot_window=-1):
+
+    if isinstance(plot_window, (list, tuple)):
+        start, end = plot_window
+    else:
+        start, end = 0, plot_window 
 
     save_path_rem = os.path.join(exp_folder_rem, "plots", "velocity")
     save_path_non_rem = os.path.join(exp_folder_non_rem, "plots", "velocity")
@@ -61,14 +66,14 @@ def save_velocity_at_nodes(G, qps_rem, qps_non_rem, exp_data_rem, exp_data_non_r
         velocity_non_rem = np.array(outflow_non_rem) / Area
         velocity_rem = np.array(outflow_rem) / Area
 
-        mean_val_non_rem = np.mean(velocity_non_rem[:plot_window])
-        mean_val_rem = np.mean(velocity_rem[:plot_window])
+        mean_val_non_rem = np.mean(velocity_non_rem[start:end])
+        mean_val_rem = np.mean(velocity_rem[start:end])
 
         # Plotting
         fig, ax = plt.subplots(figsize=ps.FIG_SIZE)
         
-        ax.plot(time_vec_non_rem[:plot_window], velocity_non_rem[:plot_window], **ps.STYLE_NON_REM)
-        ax.plot(time_vec_rem[:plot_window], velocity_rem[:plot_window], **ps.STYLE_REM)
+        ax.plot(time_vec_non_rem[start:end], velocity_non_rem[start:end], **ps.STYLE_NON_REM)
+        ax.plot(time_vec_rem[start:end], velocity_rem[start:end], **ps.STYLE_REM)
         
         ax.axhline(mean_val_non_rem, **ps.STYLE_MEAN_NON_REM)
         ax.axhline(mean_val_rem, **ps.STYLE_MEAN_REM)
@@ -81,7 +86,7 @@ def save_velocity_at_nodes(G, qps_rem, qps_non_rem, exp_data_rem, exp_data_non_r
         fig.tight_layout() 
         
         # Unique filename using node index
-        filename = f"velocity_at_node_{str(node_idx)}_{str(id)}.png"
+        filename = f"velocity_at_node_{str(node_idx)}.png"
         
         file_out_rem = os.path.join(save_path_rem, filename) 
         fig.savefig(file_out_rem, dpi=300)

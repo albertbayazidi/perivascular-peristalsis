@@ -6,10 +6,15 @@ from graphnics import *
 from xii import *
 import matplotlib.pyplot as plt
 
-def save_net_flow_at_nodes(G, qps_rem, qps_non_rem, exp_data_rem, exp_data_non_rem, 
-                           exp_folder_rem, exp_folder_non_rem, id, 
+def save_net_flow_at_nodes(G, qps_non_rem, qps_rem,  exp_data_non_rem, exp_data_rem, 
+                           exp_folder_non_rem, exp_folder_rem,
                            target_node_indices=None, plot_window=-1):
-    
+
+    if isinstance(plot_window, (list, tuple)):
+        start, end = plot_window
+    else:
+        start, end = 0, plot_window 
+
     save_path_rem = os.path.join(exp_folder_rem, "plots", "net_flow")
     save_path_non_rem = os.path.join(exp_folder_non_rem, "plots", "net_flow")
 
@@ -51,8 +56,8 @@ def save_net_flow_at_nodes(G, qps_rem, qps_non_rem, exp_data_rem, exp_data_non_r
         # Plotting
         fig, ax = plt.subplots(figsize=ps.FIG_SIZE)
 
-        ax.plot(time_vec_rem[:plot_window], ys_rem[:plot_window], **ps.STYLE_REM)
-        ax.plot(time_vec_non_rem[:plot_window], ys_non_rem[:plot_window], **ps.STYLE_NON_REM)
+        ax.plot(time_vec_rem[start:end], ys_rem[start:end], **ps.STYLE_REM)
+        ax.plot(time_vec_non_rem[start:end], ys_non_rem[start:end], **ps.STYLE_NON_REM)
 
         ax.set_title(f"Net flow at Node {node_idx}", fontsize=16)
         ax.set_xlabel("t' [sec]", fontsize=16)
@@ -62,7 +67,7 @@ def save_net_flow_at_nodes(G, qps_rem, qps_non_rem, exp_data_rem, exp_data_non_r
         fig.tight_layout() 
         
         # Unique filename using node index
-        filename = f"net_flow_at_node_{str(node_idx)}_{str(id)}.png"
+        filename = f"net_flow_at_node_{str(node_idx)}.png"
         
         file_out_rem = os.path.join(save_path_rem, filename) 
         fig.savefig(file_out_rem, dpi=300)

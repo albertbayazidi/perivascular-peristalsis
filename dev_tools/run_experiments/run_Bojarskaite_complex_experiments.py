@@ -1,22 +1,22 @@
 import numpy as np
 
-from simulation.utils.load import load_raw_data
 from dev_tools.run_experiments.experiment_utils import *
-from simulation.utils.plot_velocity_field import save_velocity_at_nodes
-from simulation.utils.plot_net_flow import save_net_flow_at_nodes
+from dev_tools.make_plots.process_experiment_pairs import process_experiment_pair 
 
 desimals = 3
 plot_window = 300
-target_nodes = [0,1,3]
+target_nodes = [0]
 
 depth = 1
 Ls_array = Ls_array_single = [0.6]  # depth 1
 #Ls_array = Ls_array_tandem = [0.3, 0.3] # depth 1 
 #Ls_array = Ls_array_bifurcated = [0.2, 0.2, 0.2] # depth 2 
-#Ls_array = Ls_array_complex = [0.23]  # depth greater or equal 3 
+#Ls_array = Ls_array_complex = [0.23]  # depth 3 
+#Ls_array = Ls_array_complex = [0.23]  # depth 6
+#Ls_array = Ls_array_complex = [0.13]  # depth 9
 
-ts_per_cycle = 5
-n_cycles = 1000
+ts_per_cycle = 1000
+n_cycles = 20 
 
 c_pial = 1.96 # (mm/s)
 
@@ -74,64 +74,39 @@ with ProcessPoolExecutor() as main_executor:
     non_rem_paths = future_non_rem.result()
     rem_paths = future_rem.result()
     
-    rem_paths_list = [item["path"] for item in rem_paths]
     non_rem_path_list = [item["path"] for item in non_rem_paths]
+    rem_paths_list = [item["path"] for item in rem_paths]
 
 matched_experiments = group_matching_experiments(non_rem_path_list, rem_paths_list)
 
-id = 0
 for match in matched_experiments:
     print(f"Match on freq = {match['freq_value']}:")
     print(f"NON-REM: {match['non_rem']}")
     print(f"REM:     {match['rem']}")
     
+    process_experiment_pair(match['non_rem'],match['rem'],plot_window,target_nodes)
+   
+    """
     graph_path = match['non_rem'] 
 
-    pressure_path_rem = f"{match['rem']}/pressure/HDF5/sols_{id}.h5"
-    flux_path_rem = f"{match['rem']}/flux/HDF5/sols_{id}.h5"
-    exp_data_file_path_rem = f"{match['rem']}/exp_data/exp_{id}.pkl"
+    pressure_path_non_rem = f"{match['non_rem']}/pressure/HDF5/sols_0.h5"
+    flux_path_non_rem = f"{match['non_rem']}/flux/HDF5/sols_0.h5"
+    exp_data_file_path_non_rem = f"{match['non_rem']}/exp_data/exp_0.pkl"
 
-    pressure_path_non_rem = f"{match['non_rem']}/pressure/HDF5/sols_{id}.h5"
-    flux_path_non_rem = f"{match['non_rem']}/flux/HDF5/sols_{id}.h5"
-    exp_data_file_path_non_rem = f"{match['non_rem']}/exp_data/exp_{id}.pkl"
+    pressure_path_rem = f"{match['rem']}/pressure/HDF5/sols_0.h5"
+    flux_path_rem = f"{match['rem']}/flux/HDF5/sols_0.h5"
+    exp_data_file_path_rem = f"{match['rem']}/exp_data/exp_0.pkl"
 
-    _, qps_non_rem, exp_data_non_rem  = load_raw_data(graph_path, pressure_path_rem, flux_path_rem, exp_data_file_path_rem)
-    G, qps_rem, exp_data_rem = load_raw_data(graph_path, pressure_path_non_rem,flux_path_non_rem, exp_data_file_path_non_rem)
+    G, qps_non_rem, exp_data_non_rem  = load_raw_data(graph_path, pressure_path_non_rem,flux_path_non_rem, exp_data_file_path_non_rem)
+
+    _, qps_rem, exp_data_rem  = load_raw_data(graph_path, pressure_path_rem, flux_path_rem, exp_data_file_path_rem)
 
     save_velocity_at_nodes(G, qps_rem, qps_non_rem, exp_data_rem, exp_data_non_rem, 
-                                f"{match['rem']}", f"{match['non_rem']}",id,
+                                f"{match['rem']}", f"{match['non_rem']}",
                            plot_window=plot_window, target_node_indices=target_nodes)
 
     save_net_flow_at_nodes(G, qps_rem, qps_non_rem, exp_data_rem, exp_data_non_rem,
-                           f"{match['rem']}", f"{match['non_rem']}", id,
+                           f"{match['rem']}", f"{match['non_rem']}",
                            plot_window=plot_window, target_node_indices=target_nodes)
-"""
-PRESSURE
-need some sort of interpolation to handle areas between dots
-        node_positions = np.array([G.nodes()[n]["pos"] for n in G.nodes()])
-        x = node_positions[:, 0]
-        y = node_positions[:, 1]
 
-        pressure_per_node = [[sol[1](pos) for sol in qps_rem] for pos in node_positions]
-
-        pressures_at_T = [p_list[-1] for p_list in pressure_per_node]
-
-        plt.figure(figsize=(7, 5))
-
-        if np.ptp(y) > 1e-8:  # if y varies, plot in 2D
-            plt.scatter(x, y, c=pressures_at_T, cmap="viridis", s=80)
-            plt.colorbar(label="Pressure p(x, y, T)")
-            plt.xlabel("x-position", fontsize=16)
-            plt.ylabel("y-position", fontsize=16)
-            plt.title(f"Pressure Field at Final Time T (2D)", fontsize=16)
-            plt.grid(True)
-            plt.show()
-        else:  # 1D line plot
-            sort_idx = np.argsort(x)
-            plt.plot(x[sort_idx], np.array(pressures_at_T)[sort_idx], marker="o")
-            plt.xlabel("Position along 1D segment (x)", fontsize=16)
-            plt.ylabel("Pressure p(x, T) dimensionless", fontsize=16)
-            plt.title(f"Pressure Field at Final Time T (1D)", fontsize=16)
-            plt.grid(True)
-            plt.show()
-"""
+    """

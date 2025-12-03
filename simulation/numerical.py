@@ -24,13 +24,13 @@ def run_numerics(G, lamdas, freqs, n_cycles=0, ts_per_cycle=40, eps=0.1):
     if state == "interacting":
         u, v = list(G.edges())[0]
         R0 = G.edges[u, v]["radius1"]
-        if (R0 == 0.006):       # NONREM
-            lambda2 = 125       # mm
-            freqs2 = 8          # Hz
+        if (R0 == 0.006):                       # NONREM
+            freqs2 = 8                          # Hz
+            lambda2 = np.round(3200/freqs2)     # mm
             eps2 = 0.0001625/0.006 
-        else:                   # REM 
-            lambda2 = 90        # mm
-            freqs2 = 11.11      # Hz
+        else:                                   # REM 
+            freqs2 = 11.11                      # Hz
+            lambda2 = np.round(3200/freqs2)     # mm
             eps2 = 0.000125/0.0075
 
         experiments = run_interacting_peristalsis_simulation(G=G, lamdas=lamdas, lambda2=lambda2,
