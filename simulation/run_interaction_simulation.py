@@ -58,7 +58,7 @@ def interacting_peristalsis(G):
     beta = nxgraph_attribute_to_dolfin(G, 'beta') 
     
     # Vasomotion R_0 = R_0(1+epsilon1*sin(k1*s-w1*t)) + R_0(1+epsilon2*sin(k2*s-w2*t))
-    R1 = R1_0*(1+eps1_*sin(k1_*s_-w1_*t_)) + R1_0*(1+eps2_*sin(k2_*s_-w2_*t_))
+    R1 = R1_0*(1+eps1_*sin(k1_*s_-w1_*t_) + eps2_*sin(k2_*s_-w2_*t_))
 
     # Source term due to arterial wall motion
     f = 2.0*np.pi*R1*ufl.diff(R1, t_) # source term

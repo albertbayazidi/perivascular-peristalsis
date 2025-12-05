@@ -4,8 +4,8 @@ from dev_tools.run_experiments.experiment_utils import *
 from dev_tools.make_plots.process_experiment_pairs import process_experiment_pair 
 
 desimals = 3
-plot_window = 300
-target_nodes = [0]
+plot_window = [0,15]
+target_nodes = [0,1] #  [0, 1, 3, 7, 15, 31, 63, 123, 225, 393]
 
 depth = 1
 Ls_array = Ls_array_single = [0.6]  # depth 1
@@ -16,7 +16,7 @@ Ls_array = Ls_array_single = [0.6]  # depth 1
 #Ls_array = Ls_array_complex = [0.13]  # depth 9
 
 ts_per_cycle = 1000
-n_cycles = 20 
+n_cycles = 6
 
 c_pial = 1.96 # (mm/s)
 
@@ -85,28 +85,3 @@ for match in matched_experiments:
     print(f"REM:     {match['rem']}")
     
     process_experiment_pair(match['non_rem'],match['rem'],plot_window,target_nodes)
-   
-    """
-    graph_path = match['non_rem'] 
-
-    pressure_path_non_rem = f"{match['non_rem']}/pressure/HDF5/sols_0.h5"
-    flux_path_non_rem = f"{match['non_rem']}/flux/HDF5/sols_0.h5"
-    exp_data_file_path_non_rem = f"{match['non_rem']}/exp_data/exp_0.pkl"
-
-    pressure_path_rem = f"{match['rem']}/pressure/HDF5/sols_0.h5"
-    flux_path_rem = f"{match['rem']}/flux/HDF5/sols_0.h5"
-    exp_data_file_path_rem = f"{match['rem']}/exp_data/exp_0.pkl"
-
-    G, qps_non_rem, exp_data_non_rem  = load_raw_data(graph_path, pressure_path_non_rem,flux_path_non_rem, exp_data_file_path_non_rem)
-
-    _, qps_rem, exp_data_rem  = load_raw_data(graph_path, pressure_path_rem, flux_path_rem, exp_data_file_path_rem)
-
-    save_velocity_at_nodes(G, qps_rem, qps_non_rem, exp_data_rem, exp_data_non_rem, 
-                                f"{match['rem']}", f"{match['non_rem']}",
-                           plot_window=plot_window, target_node_indices=target_nodes)
-
-    save_net_flow_at_nodes(G, qps_rem, qps_non_rem, exp_data_rem, exp_data_non_rem,
-                           f"{match['rem']}", f"{match['non_rem']}",
-                           plot_window=plot_window, target_node_indices=target_nodes)
-
-    """

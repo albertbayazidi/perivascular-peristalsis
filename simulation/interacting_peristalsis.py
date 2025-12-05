@@ -54,7 +54,7 @@ def run_interacting_peristalsis_simulation(G, lamdas, lambda2, freqs, freqs2, n_
         lamda = exp["lamda"]
         print(f"lambda={lamda}, number of mesh refinements: {i}")
 
-        f, area_inv, res, g, t_, k1_, k2_, w1_, w2_, s_, eps1_, eps2_, R1 = interacting_peristalsis(G)
+        f, area_inv, res, _, t_, k1_, k2_, w1_, w2_, _, eps1_, eps2_, _ = interacting_peristalsis(G)
 
         for e in G.edges():
             G.edges()[e]["Res"] = res
@@ -73,7 +73,7 @@ def run_interacting_peristalsis_simulation(G, lamdas, lambda2, freqs, freqs2, n_
         n_cycles = exp["n_cycles"]
         time_steps = exp["ts_per_cycle"] * n_cycles
 
-        model = TimeDepHydraulicNetwork(G, p_bc=Constant(0), f=f, Ainv=area_inv, Res=res, g=g) 
+        model = TimeDepHydraulicNetwork(G, p_bc=Constant(0), f=f, Ainv=area_inv, Res=res) 
 
         qps = time_stepping_stokes(model, t=t_, qp0=None, t_steps = time_steps, T=exp["T"])
 

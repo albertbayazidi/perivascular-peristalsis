@@ -74,7 +74,7 @@ def save_net_flow_at_nodes(G, qps_non_rem, qps_rem,  exp_data_non_rem, exp_data_
 
         ax.set_title(f"Net flow at Node {node_idx}", fontsize=16)
         ax.set_xlabel("t' [sec]", fontsize=16)
-        ax.set_ylabel("$\\int_0^{t'} Q'(\\tau) \\, \\mathrm{d} \\tau$ [$mm$]", fontsize=16)
+        ax.set_ylabel("$\\int_0^{t'} Q'(\\tau) \\, \\mathrm{d} \\tau$ [$mm^3$]", fontsize=16)
         ax.grid(True)
         ax.legend(loc="upper center", bbox_to_anchor=(0.5, -0.05),fancybox=True, shadow=True)
         fig.tight_layout() 

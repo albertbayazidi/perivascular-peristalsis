@@ -1,8 +1,5 @@
 from graph.spatial_utils import compute_vessel_endpoint, Point, doIntersect
 from graphnics import copy_from_nx_graph
-import copy
-
-from graph.graph_utils import junctions, find_twig_path
 
 import networkx as nx
 import numpy as np

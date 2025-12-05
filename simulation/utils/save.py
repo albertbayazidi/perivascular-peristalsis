@@ -6,9 +6,6 @@ import pickle
 
 from graphnics import *
 
-from analytics.utils import dimensional_P
-from analytics.utils import dimensional_Q
-
 from dev_tools.run_experiments.experiment_utils import make_cmd_ready
 from simulation.utils.save_path_utils import make_experiment_folder
 
@@ -81,7 +78,7 @@ def make_experiment_command(data):
     return " ".join(cmd)
 
 
-def save_raw_data(data, G, experiments, mu, rho):
+def save_raw_data(data, G, experiments):
     json_string, exp_folder = make_experiment_folder(pd.DataFrame(data))
     cmd_string = make_experiment_command(pd.DataFrame(data))
 
@@ -94,12 +91,12 @@ def save_raw_data(data, G, experiments, mu, rho):
     with open(cmd_path, "w") as f:
         f.write(cmd_string)
 
-    save_exp(G, experiments, exp_folder, mu, rho)
+    save_exp(G, experiments, exp_folder)
 
     return exp_folder, json_path
 
 
-def save_exp(G, experiments, exp_folder, mu, rho):
+def save_exp(G, experiments, exp_folder):
     exp_data_folder = os.path.join(exp_folder, "exp_data")
     pressure_H5_path = os.path.join(exp_folder, "pressure/HDF5")
     pressure_pvd_path = os.path.join(exp_folder, "pressure/pvd")
@@ -111,15 +108,11 @@ def save_exp(G, experiments, exp_folder, mu, rho):
     os.makedirs(pressure_pvd_path, exist_ok=True)
     os.makedirs(flux_H5_path, exist_ok=True)
     os.makedirs(flux_pvd_path, exist_ok=True)
+    
+    tangent = TangentFunction(G, degree=1)
 
     for exp_id, exp in enumerate(experiments):
-        k = exp["k"]
-        w = exp["w"]
-        eps = exp["epsilon"]
         qps = exp["sol"]
-
-        u, v = list(G.edges())[0]
-        R0 = G.edges[u, v]["radius1"]
         
         G_nx = nx.DiGraph(G)
         for e in G_nx.edges():
@@ -134,11 +127,15 @@ def save_exp(G, experiments, exp_folder, mu, rho):
         q_space = qps[0][0].function_space()
         p_space = qps[0][1].function_space()
 
-        q_dim_func = Function(q_space, name="flux") 
+        vec_space = VectorFunctionSpace(G.mesh, 'DG', 1)
+        
+        q_dim_func = Function(q_space, name="flux_scalar") 
+        q_vec_func = Function(vec_space, name="flux") 
         p_dim_func = Function(p_space, name="pressure")        
 
+        pvd_p = TubeFile(G, f"{pressure_pvd_path}/sols_{exp_id}.pvd")
+        
         pvd_q = File(f"{flux_pvd_path}/sols_{exp_id}.pvd")
-        pvd_p = File(f"{pressure_pvd_path}/sols_{exp_id}.pvd")
 
         flux_h5_path = f"{flux_H5_path}/sols_{exp_id}.h5" 
         pressure_h5_path = f"{pressure_H5_path}/sols_{exp_id}.h5" 
@@ -150,13 +147,14 @@ def save_exp(G, experiments, exp_folder, mu, rho):
             pressure_group = h5_p.create_group("pressure")
 
             for ix, (q, p) in enumerate(qps):
-                q_dim_expr = dimensional_Q(q, k, w, eps, R0)
-                p_dim_expr = dimensional_P(p, k, w, eps, R0, mu, rho) 
 
-                q_dim_func.assign(project(q_dim_expr, q_space))
-                p_dim_func.assign(project(p_dim_expr, p_space))
+                q_dim_func.assign(project(q, q_space))
+                p_dim_func.assign(project(p, p_space))
+                
+                q_vec_func.assign(project(q * tangent, vec_space))
 
-                pvd_q << (q_dim_func, float(ix))
+                pvd_q << (q_vec_func, float(ix))
+                
                 pvd_p << (p_dim_func, float(ix))
 
                 q_data = q_dim_func.vector().get_local()

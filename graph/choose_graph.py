@@ -11,13 +11,13 @@ def setup_graph(depth, betas, Ls, radius0):
     """
 
     if len(betas) == 1 and depth == 1:
-        G = line_graph(n=2, dim=2, dx=Ls[0])
+        G = line_graph(n=2, dim=3, dx=Ls[0])
         G.nodes[0]["depth"] = depth
         
     elif len(betas) == 2 and depth == 1:
         La, Lb = Ls
         
-        G = line_graph(n=3, dim=2, dx=La)
+        G = line_graph(n=3, dim=3, dx=La)
 
         G.nodes()[0]["pos"] = [0, 0]
         G.nodes()[1]["pos"] = [La, 0]
@@ -58,6 +58,7 @@ def setup_graph(depth, betas, Ls, radius0):
         return G
 
     # Add inner and outer radiuses, and beta values, as edge attributes
+    nx.set_edge_attributes(G, radius0, "radius")
     nx.set_edge_attributes(G, radius0, "radius1")
 
     # make dict of betas

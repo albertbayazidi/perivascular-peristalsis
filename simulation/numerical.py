@@ -24,14 +24,15 @@ def run_numerics(G, lamdas, freqs, n_cycles=0, ts_per_cycle=40, eps=0.1):
     if state == "interacting":
         u, v = list(G.edges())[0]
         R0 = G.edges[u, v]["radius1"]
-        if (R0 == 0.006):                       # NONREM
-            freqs2 = 8                          # Hz
-            lambda2 = np.round(3200/freqs2)     # mm
-            eps2 = 0.0001625/0.006 
-        else:                                   # REM 
-            freqs2 = 11.11                      # Hz
-            lambda2 = np.round(3200/freqs2)     # mm
-            eps2 = 0.000125/0.0075
+        cardiac_wave_speed = 3200
+        if (R0 == 0.006):                                       # NONREM
+            freqs2 = 8                                          # Hz
+            lambda2 = np.round(cardiac_wave_speed/freqs2)       # mm
+            eps2 = 0.0001625/R0 
+        else:                                                   # REM 
+            freqs2 = 11.11                                      # Hz
+            lambda2 = np.round(cardiac_wave_speed/freqs2)       # mm
+            eps2 = 0.000125/R0
 
         experiments = run_interacting_peristalsis_simulation(G=G, lamdas=lamdas, lambda2=lambda2,
                                                              freqs=freqs, freqs2=freqs2, n_cycles=n_cycles,

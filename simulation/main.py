@@ -70,13 +70,13 @@ def main():
         Ls = [G.edges()[e]["length"] for e in G.edges()]
         betas = np.full(len(Ls), betas[0])
 
-    if args.plot: plot_tree(G,[0])
+    if args.plot: plot_tree(G,[0,1,2,3])
 
     Q_avg_num_results, Q_avg_analytical, experiments = compare(G, r0, Ls, betas, lambdas, freqs, n_cycles, ts_per_cycle, eps)
 
     exp_result_dict = make_experiment_result_dict(depth, r0, Ls, betas, experiments, Q_avg_num_results, Q_avg_analytical,G)
 
-    _, json_path = save_raw_data(exp_result_dict, G, experiments, 1, 1)
+    _, json_path = save_raw_data(exp_result_dict, G, experiments)
 
     return json_path
 
